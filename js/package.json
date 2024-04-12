@@ -1,14 +1,16 @@
 {
   "name": "@mosip/pixelpass",
   "version": "0.1.2",
-  "description": "JS module that can be used to compress (zlib) , encode (base45) and generate QR out of given any data. Also can be used to do the operation vice versa",
+  "repository": "https://github.com/mosip/pixelpass",
+  "author": "MOSIP",
+  "license": "MIT",
+  "homepage": "https://github.com/mosip/pixelpass",
+  "description",: "JS module that can be used to compress (zlib) , encode (base45) and generate QR out of given any data. Also can be used to do the operation vice versa",
   "main": "src/index.js",
   "scripts": {
     "test": "jest",
     "verify": "npm test"
   },
-  "author": "",
-  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.24.4",
     "@babel/preset-env": "^7.24.4",
