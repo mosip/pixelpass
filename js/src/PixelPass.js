@@ -6,7 +6,7 @@ import {
     DEFAULT_QR_SCALE, DEFAULT_ZLIB_COMPRESSION_LEVEL
 } from "./shared/Constants";
 
-const b45 = require("base45");
+const b45 = require("base45-web");
 const pako = require('pako');
 import QRCode from 'qrcode';
 
