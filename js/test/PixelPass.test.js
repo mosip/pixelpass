@@ -11,6 +11,14 @@ test("should return decoded data for given QR data", () => {
 });
 
 
+test("should return decoded data for given QR data in cbor", () => {
+    const data = "NCFHPE/Q6:96+963Y6:96P563H0 %2DH0";
+    const expected =  "{\"temp\":15}";
+
+    const actual = decodeData(data);
+    expect(actual).toBe(expected);
+});
+
 //todo :: document exceptions
 //todo :: write test for same
 test("should return encoded QR data for data", () => {
@@ -32,7 +40,7 @@ test("should return base64 encoded QR for given data", async () => {
     const data = "hello";
     const expected = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQ4AAAEOCAYAAAB4sfmlAAAAAklEQVR4AewaftIAAAUpSURBVO3BQY5bCw4EsCrB97+yJvvePH14YKdDsvtHAA4mAEcTgKMJwNEE4GgCcDQBOJoAHE0AjiYARxOAownA0QTgaAJwNAE4mgAcTQCOJgBHE4CjCcDRBOBoAnA0ATiaABxNAI4mAEcTgKMJwNEE4GgCcPTKh7QNP+1uPqFtntjdPNE2T+xunmgbftrdfMIE4GgCcDQBOJoAHE0AjiYARxOAownA0QTg6JUvt7v5DdrmndrmnXY3v8Hu5jdom282ATiaABxNAI4mAEcTgKMJwNEE4GgCcDQBOHrll2ibT9jdfMLu5p3a5p12N9+sbT5hd/MbTACOJgBHE4CjCcDRBOBoAnA0ATiaABxNAI5e4Vdrmyd2N+/UNk/sbvj7TACOJgBHE4CjCcDRBOBoAnA0ATiaABxNAI5e4a/UNu/UNk/sbmACcDQBOJoAHE0AjiYARxOAownA0QTgaAJw9Movsbv5l+xuPqFtntjdfLPdDf/dBOBoAnA0ATiaABxNAI4mAEcTgKMJwNEE4OiVL9c2/NQ2T+xunmibJ3Y3T7TNE7ubd2ob/v8mAEcTgKMJwNEE4GgCcDQBOJoAHE0AjiYAR90/wj+vbT5hd8PfZwJwNAE4mgAcTQCOJgBHE4CjCcDRBOBoAnD0yoe0zRO7myfa5ondzRNt88Tu5om2eWJ38812N0+0zTdrmyd2N+/UNk/sbr7ZBOBoAnA0ATiaABxNAI4mAEcTgKMJwNEE4Kj7Rz6gbd5pd/NE2zyxu/mEtnlid/NE2zyxu3mibf4lu5tPaJsndjefMAE4mgAcTQCOJgBHE4CjCcDRBOBoAnA0ATh65cvtbp5om09om09omyd2N0+0zSfsbp5om09oG36aABxNAI4mAEcTgKMJwNEE4GgCcDQBOJoAHHX/CD+0zTvtbp5omyd2N9+sbZ7Y3bxT27zT7oafJgBHE4CjCcDRBOBoAnA0ATiaABxNAI4mAEev/GPa5ondzTu1zTu1zRO7m3dqm99gd/PN2uaJ3c0nTACOJgBHE4CjCcDRBOBoAnA0ATiaABxNAI66f4S/Ttv8Brubd2qbd9rdPNE277S7+WYTgKMJwNEE4GgCcDQBOJoAHE0AjiYARxOAo+4f+YC24afdzSe0zRO7m09omyd2N+/UNk/sbp5om3fa3XzCBOBoAnA0ATiaABxNAI4mAEcTgKMJwNEE4OiVL7e7+Q3a5hPa5p3a5hN2N0+0zRO7myd2N/w0ATiaABxNAI4mAEcTgKMJwNEE4GgCcDQBOHrll2ibT9jdfELbPLG7eae24b/b3fwGE4CjCcDRBOBoAnA0ATiaABxNAI4mAEcTgKNX+Cvtbp5omyd2N++0u3mibZ5omyd2N+/UNk/sbp5omyd2N99sAnA0ATiaABxNAI4mAEcTgKMJwNEE4GgCcPQKf6W2eae2eae2eWJ380Tb/Aa7myfa5ondzSdMAI4mAEcTgKMJwNEE4GgCcDQBOJoAHE0Ajl75JXY3/5LdzSe0zRO7myfa5ondzTu1zSe0zW8wATiaABxNAI4mAEcTgKMJwNEE4GgCcDQBOHrly7UNP7XNJ+xu3ml380TbPLG7eWJ38wm7myfa5ptNAI4mAEcTgKMJwNEE4GgCcDQBOJoAHE0Ajrp/BOBgAnA0ATiaABxNAI4mAEcTgKMJwNEE4GgCcDQBOJoAHE0AjiYARxOAownA0QTgaAJwNAE4mgAcTQCOJgBHE4CjCcDRBOBoAnA0ATiaABxNAI4mAEf/A4+rCzKLi4oKAAAAAElFTkSuQmCC"
 
-    const actual = await generateQRBase64Image(data)
+    const actual = await generateQRBase64Image(data,ECC.M)
     expect(actual).toBe(expected);
 });
 

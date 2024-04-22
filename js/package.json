@@ -1,6 +1,6 @@
 {
   "name": "@mosip/pixelpass",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "repository": "https://github.com/mosip/pixelpass",
   "author": "MOSIP",
   "license": "MIT",
@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "base45-web": "^1.0.2",
+    "cbor-web": "^9.0.2",
     "expect": "^29.7.0",
     "pako": "^2.1.0",
     "qrcode": "^1.5.3"
