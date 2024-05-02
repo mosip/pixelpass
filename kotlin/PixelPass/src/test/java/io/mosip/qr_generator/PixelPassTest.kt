@@ -1,7 +1,6 @@
 package io.mosip.qr_generator
 
 import android.graphics.Bitmap
-import io.mockk.awaits
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
@@ -12,7 +11,6 @@ import io.mockk.runs
 import io.mosip.pixelpass.PixelPass
 import io.mosip.pixelpass.types.ECC
 import io.mosip.pixelpass.zlib.ZLib
-import org.json.JSONObject
 import org.junit.After
 import org.junit.Assert
 import org.junit.Test
@@ -48,6 +46,14 @@ class   PixelPassTest {
     fun `should return decoded data for given QR data`() {
         val data = "NCFKVPV0QSIP600GP5L0"
         val expected = "hello"
+
+        val actual = PixelPass().decode(data)
+        Assert.assertEquals(expected, actual)
+    }
+    @Test
+    fun `should return decoded data for given QR data in cbor`() {
+        val data = "NCFHPE/Q6:96+963Y6:96P563H0 %2DH0"
+        val expected = "{\"temp\":15}"
 
         val actual = PixelPass().decode(data)
         Assert.assertEquals(expected, actual)

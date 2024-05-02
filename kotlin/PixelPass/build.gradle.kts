@@ -39,4 +39,5 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
+    testImplementation("org.json:json:20140107")
 }

@@ -16,7 +16,7 @@ import java.io.ByteArrayInputStream
 import java.util.Objects
 
 class PixelPass {
-    fun generateQRCode(data: String, ecc: ECC = ECC.M, header: String = ""): Bitmap {
+    fun generateQRCode(data: String, ecc: ECC = ECC.L, header: String = ""): Bitmap {
         val dataWithHeader = getDataBytes(data, header)
         val qrcode = QrCode.encodeText(String(dataWithHeader), ecc.mEcc)
         return toBitmap(qrcode)

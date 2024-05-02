@@ -2,6 +2,7 @@ package io.mosip.example_qr_generator
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,6 +14,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import com.google.zxing.BinaryBitmap
+import com.google.zxing.LuminanceSource
+import com.google.zxing.MultiFormatReader
+import com.google.zxing.RGBLuminanceSource
+import com.google.zxing.Reader
+import com.google.zxing.common.HybridBinarizer
 import io.mosip.pixelpass.PixelPass
 
 
@@ -30,6 +37,7 @@ class MainActivity : ComponentActivity() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 val pixelPass  = PixelPass()
                 val bmp = pixelPass.generateQRCode(s.toString())
+                qrData = detectQrCode(bmp)
                 findViewById<ImageView>(R.id.qrImage).setImageBitmap(bmp)
                 findViewById<ImageView>(R.id.qrImage).invalidate()
             }
@@ -58,5 +66,15 @@ class MainActivity : ComponentActivity() {
         }
 
 
+    }
+    private fun detectQrCode(bMap: Bitmap): String {
+
+        val intArray =  IntArray(bMap.getWidth()*bMap.getHeight())
+        bMap.getPixels(intArray, 0, bMap.getWidth(), 0, 0, bMap.getWidth(), bMap.getHeight())
+        val source: LuminanceSource =  RGBLuminanceSource(bMap.getWidth(), bMap.getHeight(), intArray)
+         val bitmap =  BinaryBitmap(HybridBinarizer(source));
+        val reader: Reader = MultiFormatReader()
+         val result = reader.decode(bitmap)
+        return result.text
     }
 }

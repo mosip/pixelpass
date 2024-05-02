@@ -12,11 +12,11 @@ todo :: add maven link
 
 ## APIs
 
-`generateQRBase64Image( data, ecc, header )`
+`generateQRCode( data, ecc, header )`
 
 `data` - Data needs to be compressed and encoded
 
-`ecc` - Error Correction Level for the QR generated. defaults to `"M"`
+`ecc` - Error Correction Level for the QR generated. defaults to `"L"`
 
 `header` - Data header need to be prepend to identify the encoded data. defaults to `""`
 
