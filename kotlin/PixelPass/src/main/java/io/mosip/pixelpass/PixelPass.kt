@@ -14,7 +14,7 @@ import nl.minvws.encoding.Base45
 import org.json.JSONObject
 import java.io.ByteArrayInputStream
 import java.util.Objects
-import android.util.Log
+
 class PixelPass {
     fun generateQRCode(data: String, ecc: ECC = ECC.L, header: String = ""): Bitmap {
         val dataWithHeader = generateQRData(data, header).toByteArray()
