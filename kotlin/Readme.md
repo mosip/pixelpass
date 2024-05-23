@@ -22,6 +22,14 @@ todo :: add maven link
 
 returns a Bitmap image with header prepended if provided.
 
+`generateQRData( data, header )`
+
+`data` - Data needs to be compressed and encoded
+
+`header` - Data header need to be prepend to identify the encoded data. defaults to `""`
+
+returns compressed and encoded data for qrcode with header prepended if provided.
+
 `decode(data)`
 
 `data` - Data needs to be decoded and decompressed without header
