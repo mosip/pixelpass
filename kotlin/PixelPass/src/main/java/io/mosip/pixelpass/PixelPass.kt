@@ -14,10 +14,10 @@ import nl.minvws.encoding.Base45
 import org.json.JSONObject
 import java.io.ByteArrayInputStream
 import java.util.Objects
-
+import android.util.Log
 class PixelPass {
     fun generateQRCode(data: String, ecc: ECC = ECC.L, header: String = ""): Bitmap {
-        val dataWithHeader = getDataBytes(data, header)
+        val dataWithHeader = generateQRData(data, header).toByteArray()
         val qrcode = QrCode.encodeText(String(dataWithHeader), ecc.mEcc)
         return toBitmap(qrcode)
     }
@@ -33,13 +33,13 @@ class PixelPass {
         }
     }
 
-    private fun getDataBytes(
+     fun generateQRData(
         data: String,
         header: String
-    ): ByteArray {
+    ): String {
         val compressedData = ZLib().encode(data.toByteArray())
         val base45Data = String(Base45.getEncoder().encode(compressedData))
-        return (header + base45Data).toByteArray()
+        return (header + base45Data)
     }
     private fun toBitmap(qrCode: QrCode): Bitmap {
         Objects.requireNonNull(qrCode)
