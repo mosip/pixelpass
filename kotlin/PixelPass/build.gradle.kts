@@ -7,7 +7,7 @@ plugins {
 }
 android {
     namespace = "io.mosip.pixelpass"
-    compileSdk = 34
+    compileSdk = 33
 
     defaultConfig {
         minSdk = 23
@@ -23,11 +23,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "11"
     }
 }
 
@@ -47,7 +47,7 @@ dependencies {
 
 tasks {
     register<Wrapper>("wrapper") {
-        gradleVersion = "8.4"
+        gradleVersion = "7.5"
     }
 }
 
