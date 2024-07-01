@@ -3,4 +3,10 @@ fileignoreconfig:
   checksum: ce0f6363a20342b3ef282880e77925a5e51b693903d3220597802e572a34832a
 - filename: kotlin/.github/workflows/android-artifact-build.yml
   checksum: 94c202278dff6f050a6a0a42a5c86c348f6393c08d502bc13e2d81bd1c8bf8cc
+- filename: js/test/PixelPass.test.js
+  checksum: 4066c8231ea691887757f78cc1f7b456be492ce48f6192cd117051ef9664029a
+- filename: js/package-lock.json
+  checksum: a17a31d61341893520f985b95cd6c893f8de1951287fb7a201209ac4cd390792
+- filename: js/src/index.js
+  checksum: b87edd3a670eb485fb91cfd75b894127fefc8029baee1d339a1d1feab54ff07e
 version: ""
