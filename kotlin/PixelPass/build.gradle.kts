@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     `maven-publish`
+    `signing`
 }
 android {
     namespace = "io.mosip.pixelpass"
