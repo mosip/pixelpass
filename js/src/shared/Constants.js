@@ -7,3 +7,5 @@ exports.COLOR_WHITE = "#FFFFFF"
 exports.DEFAULT_QR_SCALE = 10
 exports.DEFAULT_QR_BORDER = 3
 exports.DEFAULT_QR_QUALITY = 1
+exports.ZIP_HEADER = "PK"
+exports.DEFAULT_ZIP_FILE_NAME = "certificate.json"

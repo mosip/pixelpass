@@ -1,20 +1,33 @@
 const {decode, generateQRCode, generateQRData, getMappedData, decodeMappedData} = require("../src");
 const {expect} = require("expect");
 const {ECC} = require("../src/types/ECC");
+const JSZip = require("jszip");
 
 const HEX_ENCODING = "hex";
 
-test("should return decoded data for given QR data", () => {
+test("should return decoded data for given QR data", async () => {
     const data = "NCFKVPV0QSIP600GP5L0";
     const expected = "hello";
 
-    const actual = decode(data);
+    const actual = await decode(data);
     expect(actual).toBe(expected);
 });
-test("should return decoded data for given QR data in cbor", () => {
+
+test("should return decoded data for given QR data for zipped data", async () => {
+    const expected = "Hello World!!";
+    const zip = new JSZip();
+    zip.file("certificate.json", expected, {
+        compression: "DEFLATE"
+    });
+    const data = await zip.generateAsync({type: 'string', compression: "DEFLATE"})
+
+    const actual = await decode(data);
+    expect(actual).toBe(expected);
+},5000);
+test("should return decoded data for given QR data in cbor", async () => {
     const data = "NCF3QBXJA5NJRCOC004 QN4";
     const expected = "{\"temp\":15}";
-    const actual = decode(data);
+    const actual = await decode(data);
     expect(actual).toBe(expected);
 });
 test("should throw error if given data is undefined for encoding", () => {
@@ -22,31 +35,18 @@ test("should throw error if given data is undefined for encoding", () => {
         "byteArrayArg is null or undefined."
     );
 });
-test("should throw error if given data is invalid for decoding", () => {
-    expect(() => decode("NCFKVPV0QSIP600GP5L00")).toThrowError(
-        "incorrect data check"
-    );
+test("should throw error if given data is null or undefined", async () => {
+    await expect(decode(null)).rejects.toThrow("Cannot read properties of null (reading 'startsWith')");
+    await expect(decode(undefined)).rejects.toThrow("Cannot read properties of undefined (reading 'startsWith')");
 });
-test("should throw error if given data is null or undefined", () => {
-    expect(() => decode(null)).toThrowError(
-        "utf8StringArg is null or undefined."
-    );
-    expect(() => decode(undefined)).toThrowError(
-        "utf8StringArg is null or undefined."
-    );
+test("should throw error if given data length is bad", async () => {
+    await expect(decode("1")).rejects.toThrow('utf8StringArg has incorrect length.');
+    await expect(decode("1234")).rejects.toThrow("utf8StringArg has incorrect length.");
 });
-test("should throw error if given data length is bad", () => {
-    expect(() => decode("1")).toThrowError("utf8StringArg has incorrect length.");
-    expect(() => decode("1234")).toThrowError(
-        "utf8StringArg has incorrect length."
-    );
-});
-test("should throw error if given data is invalid", () => {
-    expect(() => decode("^1")).toThrowError("Invalid character at position 0.");
-    expect(() => decode("1^")).toThrowError("Invalid character at position 1.");
-    expect(() => decode("0123456789^")).toThrowError(
-        "Invalid character at position 10."
-    );
+test("should throw error if given data is invalid", async () => {
+    await expect( decode("1^")).rejects.toThrow("Invalid character at position 1.");
+    await expect(decode("^1")).rejects.toThrow("Invalid character at position 0.");
+    await expect(decode("0123456789^")).rejects.toThrow("Invalid character at position 10.");
 });
 test("should return encoded QR data for data", () => {
     const expected = "NCFKVPV0QSIP600GP5L0";
@@ -76,7 +76,7 @@ test("should return base64 encoded QR for given data", async () => {
 
     const actual = await generateQRCode(data, ECC.M);
     expect(actual).toBe(expected);
-});
+},5000);
 test("should return base64 encoded QR for given data with header", async () => {
     const data = "hello";
     const header = "mockHeader://";

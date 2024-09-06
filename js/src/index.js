@@ -5,12 +5,15 @@ const {
     COLOR_BLACK,
     COLOR_WHITE,
     DEFAULT_ZLIB_COMPRESSION_LEVEL,
-    DEFAULT_ECC_LEVEL
+    DEFAULT_ECC_LEVEL,
+    ZIP_HEADER,
+    DEFAULT_ZIP_FILE_NAME
 } = require('./shared/Constants');
 const QRCode = require('qrcode');
 const b45 = require("base45-web");
 const pako = require("pako");
 const cbor = require("cbor-web");
+const JSZip = require("jszip");
 
 function generateQRData(data, header = "") {
     let parsedData = null;
@@ -27,7 +30,6 @@ function generateQRData(data, header = "") {
     }
     return header + b45EncodedData;
 }
-
 async function generateQRCode(data, ecc = DEFAULT_ECC_LEVEL, header = "") {
     const base45Data = generateQRData(data, header);
     const opts = {
@@ -43,7 +45,12 @@ async function generateQRCode(data, ecc = DEFAULT_ECC_LEVEL, header = "") {
     return QRCode.toDataURL(base45Data, opts);
 }
 
-function decode(data) {
+async function decode(data) {
+    if (data.startsWith(ZIP_HEADER)){
+        try {
+            return (await JSZip.loadAsync(data)).file(DEFAULT_ZIP_FILE_NAME).async("text")
+        }catch (e){}
+    }
     const decodedBase45Data = b45.decode(data);
     const decompressedData = pako.inflate(decodedBase45Data);
     const textData = new TextDecoder().decode(decompressedData);
