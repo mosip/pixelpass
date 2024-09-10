@@ -15,12 +15,13 @@
     "@babel/core": "^7.24.4",
     "@babel/preset-env": "^7.24.4",
     "babel-jest": "^29.7.0",
-    "jest": "^29.7.0",
-    "expect": "^29.7.0"
+    "expect": "^29.7.0",
+    "jest": "^29.7.0"
   },
   "dependencies": {
     "base45-web": "^1.0.2",
     "cbor-web": "^9.0.2",
+    "jszip": "^3.10.1",
     "pako": "^2.1.0",
     "qrcode": "^1.5.3"
   }
