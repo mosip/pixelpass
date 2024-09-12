@@ -6,8 +6,10 @@ import android.util.Log
 import co.nstant.`in`.cbor.CborDecoder
 import co.nstant.`in`.cbor.CborEncoder
 import io.mosip.pixelpass.cbor.Utils
+import io.mosip.pixelpass.shared.DEFAULT_ZIP_FILE_NAME
 import io.mosip.pixelpass.shared.QR_BORDER
 import io.mosip.pixelpass.shared.QR_SCALE
+import io.mosip.pixelpass.shared.ZIP_HEADER
 import io.mosip.pixelpass.shared.decodeHex
 import io.mosip.pixelpass.types.ECC
 import io.mosip.pixelpass.zlib.ZLib
@@ -15,8 +17,10 @@ import io.nayuki.qrcodegen.QrCode
 import nl.minvws.encoding.Base45
 import org.json.JSONArray
 import org.json.JSONObject
+import org.zeroturnaround.zip.ZipUtil
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.util.Objects
 
 class PixelPass {
@@ -40,6 +44,19 @@ class PixelPass {
         }catch (_: Exception){
             String(decompressedData)
         }
+    }
+
+    fun decode(data: ByteArray): String {
+        if (String(data).startsWith(ZIP_HEADER)) {
+            try {
+                val tempFile = File.createTempFile("temp",".zip")
+                tempFile.writeBytes(data)
+                if (ZipUtil.containsEntry(tempFile, DEFAULT_ZIP_FILE_NAME))
+                    return String(ZipUtil.unpackEntry(tempFile, DEFAULT_ZIP_FILE_NAME))
+                else decode(String(data))
+            } catch (e: Exception) { throw e}
+        }
+        return decode(String(data))
     }
 
      fun generateQRData(

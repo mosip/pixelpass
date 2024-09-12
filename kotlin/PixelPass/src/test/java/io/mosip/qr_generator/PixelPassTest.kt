@@ -17,6 +17,9 @@ import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
+import org.zeroturnaround.zip.ZipUtil
+import java.io.File
+import java.io.FileOutputStream
 
 class   PixelPassTest {
 
@@ -157,6 +160,20 @@ class   PixelPassTest {
         val mapper = mapOf("1" to "id","2" to "name", "3" to "l_name")
 
         val actual = PixelPass().decodeMappedData(data,mapper)
+        Assert.assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `should return decoded data for given QR data for zipped data`() {
+        val expected = "Hello World!!";
+        val createTempFile = File("certificate.json")
+        val fos = FileOutputStream(createTempFile)
+        fos.write(expected.toByteArray())
+        fos.close()
+        val tempZip = File.createTempFile("temp", ".zip")
+        ZipUtil.packEntry(createTempFile, tempZip);
+
+        val actual = PixelPass().decode(tempZip.readBytes())
         Assert.assertEquals(expected, actual)
     }
 }
