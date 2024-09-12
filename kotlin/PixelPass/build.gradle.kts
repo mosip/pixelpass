@@ -34,6 +34,7 @@ dependencies {
     implementation(libs.qrcodegen)
     implementation(libs.base45)
     implementation(libs.cbor)
+    implementation(libs.ztzip)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
