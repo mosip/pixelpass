@@ -86,8 +86,8 @@ This API will return a base45 encoded string which is `Compressed > CBOR Encoded
 ```javascript
 import { decode } from '@mosip/pixelpass';
 
-const encodedData = "NCFWTL$PPB$PN$AWGAE%5UW5A%ADFAHR9 IE:GG6ZJJCL2.AJKAMHA100+8S.1";
-const jsonString = decode(encodedData);
+const b45EncodedData = "NCFWTL$PPB$PN$AWGAE%5UW5A%ADFAHR9 IE:GG6ZJJCL2.AJKAMHA100+8S.1";
+const jsonString = decode(new TextEncoder().encode(b45EncodedData));
 ```
 The `decode` will take a `UInt8ByteArray`  as parameter and gives us decoded JSON string which is Base45 `Decoded > CBOR Decoded > Decompressed`.
 
