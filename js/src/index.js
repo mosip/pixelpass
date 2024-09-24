@@ -46,12 +46,13 @@ async function generateQRCode(data, ecc = DEFAULT_ECC_LEVEL, header = "") {
 }
 
 async function decode(data) {
-    if (data.startsWith(ZIP_HEADER)){
+    let decodedData = new TextDecoder("utf-8").decode(data);
+    if (decodedData.startsWith(ZIP_HEADER)){
         try {
-            return (await JSZip.loadAsync(data)).file(DEFAULT_ZIP_FILE_NAME).async("text")
+            return (await JSZip.loadAsync(decodedData)).file(DEFAULT_ZIP_FILE_NAME).async("text")
         }catch (e){}
     }
-    const decodedBase45Data = b45.decode(data);
+    const decodedBase45Data = b45.decode(decodedData);
     const decompressedData = pako.inflate(decodedBase45Data);
     const textData = new TextDecoder().decode(decompressedData);
     try {

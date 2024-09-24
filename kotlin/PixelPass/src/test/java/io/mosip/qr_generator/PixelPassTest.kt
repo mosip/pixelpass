@@ -193,6 +193,20 @@ class PixelPassTest {
         val actual = PixelPass().decode(tempZip.readBytes())
         Assert.assertEquals(expected, actual)
     }
+
+    @Test
+    fun `should return decoded data for given QR data for zipped data`() {
+        val expected = "Hello World!!";
+        val createTempFile = File("certificate.json")
+        val fos = FileOutputStream(createTempFile)
+        fos.write(expected.toByteArray())
+        fos.close()
+        val tempZip = File.createTempFile("temp", ".zip")
+        ZipUtil.packEntry(createTempFile, tempZip);
+
+        val actual = PixelPass().decode(tempZip.readBytes())
+        Assert.assertEquals(expected, actual)
+    }
 }
 
 
