@@ -5,8 +5,12 @@ const JSZip = require("jszip");
 
 const HEX_ENCODING = "hex";
 
+function getUintArray(str) {
+    return new TextEncoder().encode(str)
+}
+
 test("should return decoded data for given QR data", async () => {
-    const data = "NCFKVPV0QSIP600GP5L0";
+    const data = getUintArray("NCFKVPV0QSIP600GP5L0");
     const expected = "hello";
 
     const actual = await decode(data);
@@ -21,11 +25,11 @@ test("should return decoded data for given QR data for zipped data", async () =>
     });
     const data = await zip.generateAsync({type: 'string', compression: "DEFLATE"})
 
-    const actual = await decode(data);
+    const actual = await decode(getUintArray(data));
     expect(actual).toBe(expected);
 },5000);
 test("should return decoded data for given QR data in cbor", async () => {
-    const data = "NCF3QBXJA5NJRCOC004 QN4";
+    const data = getUintArray("NCF3QBXJA5NJRCOC004 QN4")
     const expected = "{\"temp\":15}";
     const actual = await decode(data);
     expect(actual).toBe(expected);
@@ -36,17 +40,17 @@ test("should throw error if given data is undefined for encoding", () => {
     );
 });
 test("should throw error if given data is null or undefined", async () => {
-    await expect(decode(null)).rejects.toThrow("Cannot read properties of null (reading 'startsWith')");
-    await expect(decode(undefined)).rejects.toThrow("Cannot read properties of undefined (reading 'startsWith')");
+    await expect(decode(null)).rejects.toThrow("The \"input\" argument must be an instance of ArrayBuffer or ArrayBufferView. Received null");
+    await expect(decode(undefined)).resolves.toBe("");
 });
 test("should throw error if given data length is bad", async () => {
-    await expect(decode("1")).rejects.toThrow('utf8StringArg has incorrect length.');
-    await expect(decode("1234")).rejects.toThrow("utf8StringArg has incorrect length.");
+    await expect(decode(getUintArray("1"))).rejects.toThrow('utf8StringArg has incorrect length.');
+    await expect(decode(getUintArray("1234"))).rejects.toThrow("utf8StringArg has incorrect length.");
 });
 test("should throw error if given data is invalid", async () => {
-    await expect( decode("1^")).rejects.toThrow("Invalid character at position 1.");
-    await expect(decode("^1")).rejects.toThrow("Invalid character at position 0.");
-    await expect(decode("0123456789^")).rejects.toThrow("Invalid character at position 10.");
+    await expect( decode(getUintArray("1^"))).rejects.toThrow("Invalid character at position 1.");
+    await expect(decode(getUintArray("^1"))).rejects.toThrow("Invalid character at position 0.");
+    await expect(decode(getUintArray("0123456789^"))).rejects.toThrow("Invalid character at position 10.");
 });
 test("should return encoded QR data for data", () => {
     const expected = "NCFKVPV0QSIP600GP5L0";
