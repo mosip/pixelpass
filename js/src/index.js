@@ -45,14 +45,8 @@ async function generateQRCode(data, ecc = DEFAULT_ECC_LEVEL, header = "") {
     return QRCode.toDataURL(base45Data, opts);
 }
 
-async function decode(data) {
-    let decodedData = new TextDecoder("utf-8").decode(data);
-    if (decodedData.startsWith(ZIP_HEADER)){
-        try {
-            return (await JSZip.loadAsync(decodedData)).file(DEFAULT_ZIP_FILE_NAME).async("text")
-        }catch (e){}
-    }
-    const decodedBase45Data = b45.decode(decodedData);
+function decode(data) {
+    const decodedBase45Data = b45.decode(data);
     const decompressedData = pako.inflate(decodedBase45Data);
     const textData = new TextDecoder().decode(decompressedData);
     try {
@@ -62,6 +56,18 @@ async function decode(data) {
     } catch (e) {
         return textData;
     }
+}
+
+async function decodeBinary(data) {
+    let decodedData = new TextDecoder("utf-8").decode(data);
+    if (decodedData.startsWith(ZIP_HEADER)){
+        try {
+            return (await JSZip.loadAsync(decodedData)).file(DEFAULT_ZIP_FILE_NAME).async("text")
+        }catch (e){
+            return decode(data)
+        }
+    }
+    return decode(data)
 }
 
 function getMappedData(jsonData, mapper, cborEnable = false) {
@@ -108,5 +114,6 @@ module.exports = {
     generateQRCode,
     decode,
     getMappedData,
-    decodeMappedData
+    decodeMappedData,
+    decodeBinary
 };
