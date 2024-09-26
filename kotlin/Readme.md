@@ -36,6 +36,12 @@ returns compressed and encoded data for qrcode with header prepended if provided
 
 returns a base45 decoded and zlib decompressed string
 
+`decodeBinary(data)`
+
+`data` - Data needs to be decoded and decompressed without header. Should be sent as a ByteArray
+
+returns a unzipped string
+
 
 `getMappedData( jsonData, mapper, cborEnable )`
 
