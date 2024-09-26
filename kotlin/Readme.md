@@ -38,7 +38,7 @@ returns a base45 decoded and zlib decompressed string
 
 `decodeBinary(data)`
 
-`data` - Data needs to be decoded and decompressed without header. Should be sent as a ByteArray
+`data` - Data needs to be decompressed without header. Should be sent as a ByteArray. Currently only zip binary data is only supported.
 
 returns a unzipped string
 

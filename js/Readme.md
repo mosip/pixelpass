@@ -101,7 +101,7 @@ import { decodeBinary } from '@mosip/pixelpass';
 const zipdata = <zip-byte-array>;
 const decompressedData = decodeBinary(zipdata);
 ```
-The `decode` will take a `UInt8ByteArray`  as parameter and gives us decoded JSON string which is Base45 `Decoded > CBOR Decoded > Decompressed`.
+The `decode` will take a `UInt8ByteArray`  as parameter and gives us unzipped string. Currently only zip binary data is only supported.
 
 
 ### getMappedData( jsonData, mapper, cborEnable );
