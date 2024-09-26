@@ -87,9 +87,22 @@ This API will return a base45 encoded string which is `Compressed > CBOR Encoded
 import { decode } from '@mosip/pixelpass';
 
 const b45EncodedData = "NCFWTL$PPB$PN$AWGAE%5UW5A%ADFAHR9 IE:GG6ZJJCL2.AJKAMHA100+8S.1";
-const jsonString = decode(new TextEncoder().encode(b45EncodedData));
+const jsonString = decode(b45EncodedData);
 ```
-The `decode` will take a `UInt8ByteArray`  as parameter and gives us decoded JSON string which is Base45 `Decoded > CBOR Decoded > Decompressed`.
+The `decode` will take a `string`  as parameter and gives us decoded JSON string which is Base45 `Decoded > CBOR Decoded > Decompressed`.
+
+### decode( data )
+
+- `data` - Data needs to be decoded and decompressed without header.
+
+```javascript
+import { decodeBinary } from '@mosip/pixelpass';
+
+const zipdata = <zip-byte-array>;
+const decompressedData = decodeBinary(zipdata);
+```
+The `decode` will take a `UInt8ByteArray`  as parameter and gives us unzipped string. Currently only zip binary data is only supported.
+
 
 ### getMappedData( jsonData, mapper, cborEnable );
 

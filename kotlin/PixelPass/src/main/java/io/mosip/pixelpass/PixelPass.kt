@@ -46,17 +46,16 @@ class PixelPass {
         }
     }
 
-    fun decode(data: ByteArray): String {
+    fun decodeBinary(data: ByteArray): String {
         if (String(data).startsWith(ZIP_HEADER)) {
             try {
                 val tempFile = File.createTempFile("temp",".zip")
                 tempFile.writeBytes(data)
                 if (ZipUtil.containsEntry(tempFile, DEFAULT_ZIP_FILE_NAME))
                     return String(ZipUtil.unpackEntry(tempFile, DEFAULT_ZIP_FILE_NAME))
-                else decode(String(data))
             } catch (e: Exception) { throw e}
         }
-        return decode(String(data))
+        throw UnknownBinaryFileTypeException();
     }
 
      fun generateQRData(
