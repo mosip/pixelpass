@@ -46,7 +46,7 @@ class PixelPass {
         }
     }
 
-    fun decode(data: ByteArray): String {
+    fun decodeBinary(data: ByteArray): String {
         if (String(data).startsWith(ZIP_HEADER)) {
             try {
                 val tempFile = File.createTempFile("temp",".zip")
