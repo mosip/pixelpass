@@ -25,6 +25,13 @@ test("should return decoded data for given QR data for zipped data", async () =>
     const actual = await decodeBinary(new TextEncoder().encode(data));
     expect(actual).toBe(expected);
 },5000);
+
+
+test("should throw error if binary data type not zip", async () => {
+    await expect(decodeBinary(new TextEncoder().encode("tempfile"))).rejects.toThrowError("Unsupported binary file type")
+});
+
+
 test("should return decoded data for given QR data in cbor", async () => {
     const data = "NCF3QBXJA5NJRCOC004 QN4";
     const expected = "{\"temp\":15}";

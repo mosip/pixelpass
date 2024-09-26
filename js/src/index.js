@@ -61,13 +61,10 @@ function decode(data) {
 async function decodeBinary(data) {
     let decodedData = new TextDecoder("utf-8").decode(data);
     if (decodedData.startsWith(ZIP_HEADER)){
-        try {
-            return (await JSZip.loadAsync(decodedData)).file(DEFAULT_ZIP_FILE_NAME).async("text")
-        }catch (e){
-            return decode(data)
-        }
+        return (await JSZip.loadAsync(decodedData)).file(DEFAULT_ZIP_FILE_NAME).async("text")
+    }else {
+        throw new Error("Unsupported binary file type");
     }
-    return decode(data)
 }
 
 function getMappedData(jsonData, mapper, cborEnable = false) {

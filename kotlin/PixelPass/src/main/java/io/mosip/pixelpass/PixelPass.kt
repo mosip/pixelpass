@@ -53,10 +53,9 @@ class PixelPass {
                 tempFile.writeBytes(data)
                 if (ZipUtil.containsEntry(tempFile, DEFAULT_ZIP_FILE_NAME))
                     return String(ZipUtil.unpackEntry(tempFile, DEFAULT_ZIP_FILE_NAME))
-                else decode(String(data))
             } catch (e: Exception) { throw e}
         }
-        return decode(String(data))
+        throw UnknownBinaryFileTypeException();
     }
 
      fun generateQRData(

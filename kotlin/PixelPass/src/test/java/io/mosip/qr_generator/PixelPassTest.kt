@@ -10,6 +10,7 @@ import io.mockk.mockkConstructor
 import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mosip.pixelpass.PixelPass
+import io.mosip.pixelpass.UnknownBinaryFileTypeException
 import io.mosip.pixelpass.types.ECC
 import io.mosip.pixelpass.zlib.ZLib
 import org.json.JSONObject
@@ -192,6 +193,16 @@ class PixelPassTest {
 
         val actual = PixelPass().decodeBinary(tempZip.readBytes())
         Assert.assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `should throw error if binary data type not zip`() {
+        val tempZip = File.createTempFile("temp", ".png")
+
+        Assert.assertThrows(UnknownBinaryFileTypeException::class.java) {
+            PixelPass().decodeBinary(tempZip.readBytes())
+        }
+
     }
 }
 
