@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     `maven-publish`
     `signing`
+    id("org.sonarqube") version "5.1.0.4882"
 }
 android {
     namespace = "io.mosip.pixelpass"
@@ -67,4 +68,11 @@ tasks.register<Jar>("jarRelease") {
 apply(from = "publish-artifact.gradle")
 tasks.register("generatePom") {
     dependsOn("generatePomFileForAarPublication", "generatePomFileForJarReleasePublication")
+}
+sonar {
+    properties {
+        property("sonar.projectKey", "mosip_pixelpass")
+        property("sonar.organization", "mosip")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
 }
