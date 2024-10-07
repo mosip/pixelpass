@@ -48,12 +48,17 @@ class PixelPass {
 
     fun decodeBinary(data: ByteArray): String {
         if (String(data).startsWith(ZIP_HEADER)) {
+            var tempFile: File? = null
             try {
-                val tempFile = File.createTempFile("temp",".zip")
+                tempFile = File.createTempFile("temp", ".zip")
                 tempFile.writeBytes(data)
                 if (ZipUtil.containsEntry(tempFile, DEFAULT_ZIP_FILE_NAME))
                     return String(ZipUtil.unpackEntry(tempFile, DEFAULT_ZIP_FILE_NAME))
-            } catch (e: Exception) { throw e}
+            } catch (e: Exception) {
+                throw e
+            } finally {
+                tempFile?.delete()
+            }
         }
         throw UnknownBinaryFileTypeException();
     }
