@@ -8,7 +8,7 @@
 
 ## Installation
 
-todo :: add maven link
+[Maven](https://oss.sonatype.org/service/local/repositories/releases/content/io/mosip/pixelpass/maven-metadata.xml)
 
 ## APIs
 
@@ -51,7 +51,7 @@ returns a unzipped string
 
 return a hex string which is a CBOR encoded JSON with given mapper if `cborEnable` is set to true. Or returns a JSON remapped string.
 
-`decodeMappeData( data, mapper )`
+`decodeMappedData( data, mapper )`
 
 - `data` - A CBOR Encoded string or JSON string which needs to be re mapped.
 - `mapper` - A Map which is used to map with the JSON.Which is a Map<String,String>
@@ -59,4 +59,4 @@ return a hex string which is a CBOR encoded JSON with given mapper if `cborEnabl
 return a JSONObject which mapped with given mapper.
 
 ## License
-MIT
+MPL-2.0
