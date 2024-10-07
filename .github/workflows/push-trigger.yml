@@ -30,6 +30,8 @@ jobs:
   build:
     name: Build and analyze SonarCloud
     runs-on: ubuntu-latest
+    with:
+      SERVICE_LOCATION: './kotlin'
     steps:
       - uses: actions/checkout@v4
         with:
