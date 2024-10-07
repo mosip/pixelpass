@@ -28,7 +28,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   build:
-    name: Build and analyze for SonarCloud
+    name: Build and analyze SonarCloud
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
