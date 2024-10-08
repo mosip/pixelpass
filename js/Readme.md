@@ -24,7 +24,7 @@ Pixelpass is a library which can do multiple things which are listed below,
 
 - When JSON and a Mapper is given, it maps the JSON with Mapper and then does the CBOR encode/decode which further reduces the size of the data.
 
-## Installation 
+## Usage 
 `npm i @mosip/pixelpass`
 
 [npm](https://www.npmjs.com/package/@mosip/pixelpass)

@@ -6,9 +6,24 @@
 - Uses zlib compression and base45 encoding
 - Decode QR data encoded by PixelPass
 
-## Installation
+## Usage
 
-[Maven](https://oss.sonatype.org/service/local/repositories/releases/content/io/mosip/pixelpass/maven-metadata.xml)
+Both Kotlin and Java packages are compiled from same Kotlin codebase. They are also deployed as aar and jar packages to maven. Below is how to use them.
+
+### Kotlin
+
+`implementation("io.mosip:pixelpass:0.5.0")`
+
+### Java
+
+```xml
+<dependency>
+  <groupId>io.mosip</groupId>
+  <artifactId>pixelpass</artifactId>
+  <version>0.5.0</version>
+</dependency>
+```
+
 
 ## APIs
 
