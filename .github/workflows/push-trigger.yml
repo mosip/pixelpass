@@ -30,8 +30,6 @@ jobs:
   build:
     name: Build and analyze SonarCloud
     runs-on: ubuntu-latest
-    with:
-      SERVICE_LOCATION: './kotlin'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -58,4 +56,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build sonar --info
+        run: ./gradlew PixelPass:build sonar --info
