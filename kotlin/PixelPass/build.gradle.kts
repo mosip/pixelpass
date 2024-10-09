@@ -1,8 +1,9 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.dokka)
     `maven-publish`
-    `signing`
+    signing
 }
 android {
     namespace = "io.mosip.pixelpass"
@@ -49,6 +50,7 @@ tasks {
 
 tasks.register<Jar>("jarRelease") {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    dependsOn("dokkaJavadoc")
     dependsOn("assembleRelease")
     from("build/intermediates/javac/release/classes") {
         include("**/*.class")
