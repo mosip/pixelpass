@@ -1,3 +1,14 @@
+def javadocJar = tasks.register('javadocJar', Jar) {
+    dependsOn "dokkaJavadoc"
+    archiveClassifier.set('javadoc')
+    from dokkaHtml.outputDirectory
+}
+
+def sourcesJar = tasks.register('sourcesJar', Jar) {
+    archiveClassifier.set('sources')
+    from(android.sourceSets.getByName("main").java.srcDirs)
+}
+
 publishing {
     repositories {
         maven {
@@ -90,7 +101,7 @@ publishing {
             }
             groupId = "io.mosip"
             artifactId = "pixelpass-aar"
-            version = "0.5.0-SNAPSHOT"
+            version = "0.5.0"
             if (project.gradle.startParameter.taskNames.any { it.contains('assembleRelease') }) {
                 artifacts {
                     aar {
@@ -104,7 +115,9 @@ publishing {
             artifact(tasks.named("jarRelease").get())
             groupId = "io.mosip"
             artifactId = "pixelpass-jar"
-            version = "0.5.0-SNAPSHOT"
+            version = "0.5.0"
+            artifact(javadocJar)
+            artifact(sourcesJar)
             pom {
                 withXml {
                     asNode().appendNode('name', "Pixelpass")
