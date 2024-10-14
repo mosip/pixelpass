@@ -7,10 +7,12 @@ Pixelpass is a library which can do multiple things which are listed below,
 - Given a JSON String → `generateQRData` → Gives back CBOR encoded data.
 
 - Given a CBOR encoded data as byte array → `decode` → Gives back JSON String.
+  
+- Given data as byteArray → `decodeBinary` → Gives back JSON String.
     
-- Given a JSON and Mapper → `getMappedCborData` → Gives back CBOR encoded data.
+- Given a JSON and Mapper → `getMappedData` → Gives back CBOR encoded data.
 
-- Given a CBOR encoded data and Mapper → `decodeMappedCborData` → Gives back a JSON.
+- Given a CBOR encoded data and Mapper → `decodeMappedData` → Gives back a JSON.
 
 ## Features
 
@@ -22,7 +24,7 @@ Pixelpass is a library which can do multiple things which are listed below,
 
 - When JSON and a Mapper is given, it maps the JSON with Mapper and then does the CBOR encode/decode which further reduces the size of the data.
 
-## Installation 
+## Usage 
 `npm i @mosip/pixelpass`
 
 [npm](https://www.npmjs.com/package/@mosip/pixelpass)
@@ -91,7 +93,7 @@ const jsonString = decode(b45EncodedData);
 ```
 The `decode` will take a `string`  as parameter and gives us decoded JSON string which is Base45 `Decoded > CBOR Decoded > Decompressed`.
 
-### decode( data )
+### decodeBinary( data )
 
 - `data` - Data needs to be decoded and decompressed without header.
 
@@ -101,7 +103,7 @@ import { decodeBinary } from '@mosip/pixelpass';
 const zipdata = <zip-byte-array>;
 const decompressedData = decodeBinary(zipdata);
 ```
-The `decode` will take a `UInt8ByteArray`  as parameter and gives us unzipped string. Currently only zip binary data is only supported.
+The `decodeBinary` will take a `UInt8ByteArray`  as parameter and gives us unzipped string. Currently only zip binary data is only supported.
 
 
 ### getMappedData( jsonData, mapper, cborEnable );
@@ -158,4 +160,4 @@ The example of the returned JSON would look like, `{"name": "Jhon", "id": "207",
 
 
 ## License
-MIT
+MPL-2.0

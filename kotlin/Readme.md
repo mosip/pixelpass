@@ -6,9 +6,24 @@
 - Uses zlib compression and base45 encoding
 - Decode QR data encoded by PixelPass
 
-## Installation
+## Usage
 
-todo :: add maven link
+Both Kotlin and Java packages are compiled from same Kotlin codebase. They are also deployed as aar and jar packages to maven. Below is how to use them.
+
+### Kotlin
+
+`implementation("io.mosip:pixelpass:0.5.0")`
+
+### Java
+
+```xml
+<dependency>
+  <groupId>io.mosip</groupId>
+  <artifactId>pixelpass</artifactId>
+  <version>0.5.0</version>
+</dependency>
+```
+
 
 ## APIs
 
@@ -51,7 +66,7 @@ returns a unzipped string
 
 return a hex string which is a CBOR encoded JSON with given mapper if `cborEnable` is set to true. Or returns a JSON remapped string.
 
-`decodeMappeData( data, mapper )`
+`decodeMappedData( data, mapper )`
 
 - `data` - A CBOR Encoded string or JSON string which needs to be re mapped.
 - `mapper` - A Map which is used to map with the JSON.Which is a Map<String,String>
@@ -59,4 +74,4 @@ return a hex string which is a CBOR encoded JSON with given mapper if `cborEnabl
 return a JSONObject which mapped with given mapper.
 
 ## License
-MIT
+MPL-2.0

@@ -1,9 +1,10 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.dokka)
     `maven-publish`
-    `signing`
     id("org.sonarqube") version "5.1.0.4882"
+    signing
 }
 android {
     namespace = "io.mosip.pixelpass"
@@ -50,6 +51,7 @@ tasks {
 
 tasks.register<Jar>("jarRelease") {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    dependsOn("dokkaJavadoc")
     dependsOn("assembleRelease")
     from("build/intermediates/javac/release/classes") {
         include("**/*.class")
@@ -59,10 +61,10 @@ tasks.register<Jar>("jarRelease") {
     }
     manifest {
         attributes["Implementation-Title"] = project.name
-        attributes["Implementation-Version"] = "1.5-SNAPSHOT"
+        attributes["Implementation-Version"] = "0.5.0-SNAPSHOT"
     }
     archiveBaseName.set("${project.name}-release")
-    archiveVersion.set("1.5-SNAPSHOT")
+    archiveVersion.set("0.5.0-SNAPSHOT")
     destinationDirectory.set(layout.buildDirectory.dir("libs"))
 }
 apply(from = "publish-artifact.gradle")
