@@ -67,6 +67,16 @@ tasks.register<Jar>("jarRelease") {
     archiveVersion.set("0.5.0-SNAPSHOT")
     destinationDirectory.set(layout.buildDirectory.dir("libs"))
 }
+
+tasks.register<Jar>("javadocJar") {
+    dependsOn("dokkaJavadoc")
+    archiveClassifier.set("javadoc")
+    from(tasks.named("dokkaHtml").get().outputs.files)
+}
+tasks.register<Jar>("sourcesJar") {
+    archiveClassifier.set("sources")
+    from(android.sourceSets["main"].java.srcDirs)
+}
 apply(from = "publish-artifact.gradle")
 tasks.register("generatePom") {
     dependsOn("generatePomFileForAarPublication", "generatePomFileForJarReleasePublication")
