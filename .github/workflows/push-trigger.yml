@@ -57,3 +57,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: ./gradlew PixelPass:build sonar --info
+
+  build-gradle:
+    uses: mosip/kattu/.github/workflows/gradle-build.yml@master
+    with:
+      SERVICE_LOCATION: kotlin
+      JAVA_VERSION: 17
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_INJI_TEAM }}
