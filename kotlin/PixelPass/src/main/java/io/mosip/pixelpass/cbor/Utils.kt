@@ -1,5 +1,8 @@
 package io.mosip.pixelpass.cbor
 
+import android.annotation.SuppressLint
+import android.os.Build
+import co.nstant.`in`.cbor.CborDecoder
 import co.nstant.`in`.cbor.model.Array
 import co.nstant.`in`.cbor.model.ByteString
 import co.nstant.`in`.cbor.model.DataItem
@@ -9,15 +12,29 @@ import co.nstant.`in`.cbor.model.Map
 import co.nstant.`in`.cbor.model.NegativeInteger
 import co.nstant.`in`.cbor.model.SimpleValue
 import co.nstant.`in`.cbor.model.SimpleValueType
+import co.nstant.`in`.cbor.model.Special
 import co.nstant.`in`.cbor.model.UnicodeString
 import co.nstant.`in`.cbor.model.UnsignedInteger
+import io.mosip.pixelpass.common.BuildConfig
+import io.mosip.pixelpass.common.Encoder
 import io.mosip.pixelpass.shared.isNegative
 import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONObject.NULL
+import java.io.ByteArrayInputStream
+import java.util.Base64
 import java.util.Locale
 
 class Utils {
+
+    @SuppressLint("NewApi")
+    fun toJson(base64UrlEncodedCborEncodedString: String): Any {
+        val decodedData: ByteArray =
+            Encoder().decodeFromBase64UrlFormatEncoded(base64UrlEncodedCborEncodedString)
+        val cbor: DataItem? =
+            CborDecoder(ByteArrayInputStream(decodedData)).decode()[0]
+        return toJson(cbor!!)
+    }
 
     fun toJson(dataItem: DataItem): Any {
         return if (dataItem.majorType == MajorType.MAP)
@@ -91,36 +108,44 @@ class Utils {
             val next = iterator.next()
             val key = next.toString()
             val dataItem = map.get(next)
-            when (dataItem.majorType) {
-                MajorType.MAP -> accumulator.put(key, mapToJson(JSONObject(), dataItem as Map))
-                MajorType.ARRAY -> accumulator.put(key, arrayToJson(JSONArray(), dataItem as Array))
-                MajorType.UNICODE_STRING -> accumulator.put(key, (dataItem as UnicodeString).string)
-                MajorType.UNSIGNED_INTEGER,
-                MajorType.NEGATIVE_INTEGER -> accumulator.put(key, (dataItem.toString()).toInt())
-                MajorType.BYTE_STRING -> accumulator.put(key, dataItem as ByteString)
-                MajorType.SPECIAL -> accumulator.put(key, getSpecial(dataItem.toString()))
-                MajorType.INVALID -> accumulator.put(key, NULL)
-                else -> accumulator.put(key, dataItem)
-            }
+            accumulator.put(key, parse(dataItem))
         }
         return accumulator
     }
 
     private fun arrayToJson(accumulator: JSONArray, array: Array): JSONArray {
         for (dataItem in array.dataItems) {
-            when (dataItem.majorType) {
-                MajorType.MAP -> accumulator.put(mapToJson(JSONObject(), dataItem as Map))
-                MajorType.ARRAY -> accumulator.put(arrayToJson(JSONArray(), dataItem as Array))
-                MajorType.UNICODE_STRING -> accumulator.put((dataItem as UnicodeString).string)
-                MajorType.UNSIGNED_INTEGER,
-                MajorType.NEGATIVE_INTEGER -> accumulator.put((dataItem.toString()).toInt())
-                MajorType.BYTE_STRING -> accumulator.put(dataItem as ByteString)
-                MajorType.SPECIAL -> accumulator.put(getSpecial(dataItem.toString()))
-                MajorType.INVALID -> accumulator.put(NULL)
-                else -> accumulator.put(dataItem)
-            }
+            accumulator.put(parse(dataItem))
         }
         return accumulator
+    }
+
+    private fun parse(dataItem: DataItem): Any? {
+        return when (dataItem.majorType) {
+            MajorType.MAP -> (mapToJson(JSONObject(), dataItem as Map))
+            MajorType.ARRAY -> (arrayToJson(JSONArray(), dataItem as Array))
+            MajorType.UNICODE_STRING -> ((dataItem as UnicodeString).string)
+            MajorType.UNSIGNED_INTEGER,
+            MajorType.NEGATIVE_INTEGER,
+            -> ((dataItem.toString()).toInt())
+
+            MajorType.BYTE_STRING -> {
+                try {
+                    val decoded =
+                        CborDecoder(ByteArrayInputStream((dataItem as ByteString).bytes)).decode()
+
+                    return parse(decoded[0])
+                } catch (e: Exception) {
+                    return (String((dataItem as ByteString).bytes))
+                } catch (e: Error) {
+                    return (String((dataItem as ByteString).bytes))
+                }
+            }
+
+            MajorType.SPECIAL -> (getSpecial(dataItem.toString()))
+            MajorType.INVALID -> (NULL)
+            else -> (dataItem)
+        }
     }
 
     private fun getSpecial(get: String): Any? {
