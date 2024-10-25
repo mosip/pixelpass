@@ -5,7 +5,9 @@ import android.graphics.Color
 import android.util.Log
 import co.nstant.`in`.cbor.CborDecoder
 import co.nstant.`in`.cbor.CborEncoder
+import co.nstant.`in`.cbor.model.DataItem
 import io.mosip.pixelpass.cbor.Utils
+import io.mosip.pixelpass.common.Encoder
 import io.mosip.pixelpass.shared.DEFAULT_ZIP_FILE_NAME
 import io.mosip.pixelpass.shared.QR_BORDER
 import io.mosip.pixelpass.shared.QR_SCALE
@@ -24,6 +26,14 @@ import java.io.File
 import java.util.Objects
 
 class PixelPass {
+    fun toJson(base64UrlEncodedCborEncodedString: String): Any {
+        val decodedData: ByteArray =
+            Encoder().decodeFromBase64UrlFormatEncoded(base64UrlEncodedCborEncodedString)
+        val cbor: DataItem? =
+            CborDecoder(ByteArrayInputStream(decodedData)).decode()[0]
+        return Utils().toJson(cbor!!)
+    }
+
     fun generateQRCode(data: String, ecc: ECC = ECC.L, header: String = ""): Bitmap {
         val dataWithHeader = generateQRData(data, header).toByteArray()
         val qrcode = QrCode.encodeText(String(dataWithHeader), ecc.mEcc)

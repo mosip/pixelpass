@@ -1,7 +1,5 @@
 package io.mosip.pixelpass.cbor
 
-import android.annotation.SuppressLint
-import android.os.Build
 import co.nstant.`in`.cbor.CborDecoder
 import co.nstant.`in`.cbor.model.Array
 import co.nstant.`in`.cbor.model.ByteString
@@ -12,30 +10,16 @@ import co.nstant.`in`.cbor.model.Map
 import co.nstant.`in`.cbor.model.NegativeInteger
 import co.nstant.`in`.cbor.model.SimpleValue
 import co.nstant.`in`.cbor.model.SimpleValueType
-import co.nstant.`in`.cbor.model.Special
 import co.nstant.`in`.cbor.model.UnicodeString
 import co.nstant.`in`.cbor.model.UnsignedInteger
-import io.mosip.pixelpass.common.BuildConfig
-import io.mosip.pixelpass.common.Encoder
 import io.mosip.pixelpass.shared.isNegative
 import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONObject.NULL
 import java.io.ByteArrayInputStream
-import java.util.Base64
 import java.util.Locale
 
 class Utils {
-
-    @SuppressLint("NewApi")
-    fun toJson(base64UrlEncodedCborEncodedString: String): Any {
-        val decodedData: ByteArray =
-            Encoder().decodeFromBase64UrlFormatEncoded(base64UrlEncodedCborEncodedString)
-        val cbor: DataItem? =
-            CborDecoder(ByteArrayInputStream(decodedData)).decode()[0]
-        return toJson(cbor!!)
-    }
-
     fun toJson(dataItem: DataItem): Any {
         return if (dataItem.majorType == MajorType.MAP)
             mapToJson(JSONObject(), dataItem as Map)
