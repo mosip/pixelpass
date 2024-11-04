@@ -5,6 +5,7 @@
 - Create QR Code for given data
 - Uses zlib compression and base45 encoding
 - Decode QR data encoded by PixelPass
+- Convert CBOR encoded base64Url string to JSON
 
 ## Usage
 
@@ -72,6 +73,12 @@ return a hex string which is a CBOR encoded JSON with given mapper if `cborEnabl
 - `mapper` - A Map which is used to map with the JSON.Which is a Map<String,String>
 
 return a JSONObject which mapped with given mapper.
+
+`toJson(base64UrlEncodedCborEncodedString)`
+
+- `base64UrlEncodedCborEncodedString` - base64url-encoded representation of the CBOR-encoded data
+
+returns decoded data in JSON format
 
 ## License
 MPL-2.0
