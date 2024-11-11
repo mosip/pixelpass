@@ -1,20 +1,16 @@
 package io.mosip.qr_generator
 
 import android.graphics.Bitmap
-import android.os.Build
 import android.util.Log
-import com.upokecenter.cbor.CBORObject
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.mockkConstructor
-import io.mockk.mockkObject
 import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mosip.pixelpass.PixelPass
 import io.mosip.pixelpass.exception.UnknownBinaryFileTypeException
-import io.mosip.pixelpass.common.BuildConfig
 import io.mosip.pixelpass.types.ECC
 import io.mosip.pixelpass.zlib.ZLib
 import org.json.JSONObject
@@ -32,9 +28,6 @@ class PixelPassTest {
     fun before() {
         mockkStatic(Log::class)
         every { Log.e(any(), any()) } returns 0
-
-        mockkObject(BuildConfig)
-        every { BuildConfig.getVersionSDKInt() } returns Build.VERSION_CODES.O
     }
 
     @After
