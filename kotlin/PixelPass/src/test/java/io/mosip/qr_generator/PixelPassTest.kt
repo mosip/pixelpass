@@ -2,6 +2,7 @@ package io.mosip.qr_generator
 
 import android.graphics.Bitmap
 import android.util.Log
+import com.upokecenter.cbor.CBORObject
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.just
@@ -10,7 +11,7 @@ import io.mockk.mockkConstructor
 import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mosip.pixelpass.PixelPass
-import io.mosip.pixelpass.UnknownBinaryFileTypeException
+import io.mosip.pixelpass.exception.UnknownBinaryFileTypeException
 import io.mosip.pixelpass.types.ECC
 import io.mosip.pixelpass.zlib.ZLib
 import org.json.JSONObject
@@ -178,6 +179,17 @@ class PixelPassTest {
         val mapper = mapOf("1" to "id", "2" to "name", "3" to "l_name")
 
         val actual = PixelPass().decodeMappedData(data, mapper)
+        Assert.assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `should verify and return decoded data for the given signed cbor data`() {
+        val expected = "{ NFI: 5796524113, img: UklGRtoBAABXRUJQVlA4IM4BAABwCgCdASotAC0APpFAmkmlo6IhKrVaqLASCWMAxQv6hS2QBv1tGlm79xr5JS3T1e9es3IjYZwiTX77BvNKQ8ay480hd5VQBSTmsHH9RqRnIyE7vzUEmzB43iKHAAD9ErU994dKrN51DoAmEiFnU7vXUN5QJwJCFyTcIv4Hjx6Ngowb4Ns5ocabETr6WdXdXFCQrq5Hlm9W7-7DYC7ujsdjHuRI6UmxEpShlVrDbuAHanu7O7YFouLw684VxSkmCoqJSUWf5a2-d275ulg4WlhQs1CpFiE6l6RnYal1LKLNIwALMQzTtfhDG0FyDJnvhuBLeGvX7Qm5UacpV8DSFMfld-13GhBKplexC7zcHUyN9WMEOBDcSKxH_8g5_8PVAGx-qaJJ4JEVOTWv91Brnt-CcCNnmabaAtaf725dAavpIzHUU5aFUioZj6c1C1vvR4h1Z0_l1LwoBWnM8cDJwbhMLjOgJlXI-SMV4Tw-IZO0Fy5TR3nmNORKQNk-0zZ01jSLxThMilGeIq5OmfqzFkzO6Fm7-WIehwoUZOYwiPdYBfcld95pIlsd_rFbHcRtr081JPQWeGh7Thwl8Ib9cb9oo09GEOJkpV5l2_wdIAA, gender: M, surName: GANHOUNOUTO, givenName: HOUNNALEMI MARIUS BELLOR, dateOfBirth: 11/10/1986 }"
+        val signCborData = "PH1:RRQXO8P609CKSD00XKDJCX498F3:M0MSM:FKQPCC\$CD53P1LD+9TC9XW6LA7SW6-Q6+96OPCH\$DFBBNRS%B93/8V50.100Y817AG6AS64V50M20+B18%J.E5010H10EGIWMJD.KFMK/H5XKBTBMI81H406N1S\$GF9IW1W+E3EYNKI3MV44ZQXBU%UMCL4AXJ%Z92XV2YUPP8URM/-PD5FA5A-T4YDM%0WCZK%J4+O7RV6%RJRCFJG4000V:V2-M7DV J9O5SM\$1Q 41A4FQA+9RW4S--4:F8VT43J40/0 %3UMGQN36WREKK7RJNK72GBD:RE8AX3MB29H3E.EULVO:-5B2I*NCU%S6MTFHMOZIT*IZVOLESYKD6UNM0NSQKPKUH2QS-OI 45NH\$B9S9KI/LJ4FUPV*6B/IB49A*8A+Z2EI7CZKQFCQ E7QK5J4UI1/R190NYL8EC8UQ1SCU:FS2AFHDREA1NEA8A5.GO9S2I0T-0UCD3UJ9*3BYL19\$RMU9:0V0O0-52J89Q492EP0FWX-Q9WD1KLCF9GFIKA72BMM7A 3K2MGIL44JJAPR/5R4CU4YB:WL9K4+\$QD1JJHAIA3A6LRJ1ABUDBHW2DL2TIZNZU0++PXGO2MOHS9VN63%4EIPQJ4FLSK%7CUI*-2YNALIF+U6IH9*KRPVQUYE-S6/-OJU9EEADH46.99VV% 237QLFBWNVU%3FC10YC4665CV.X06X4C5SKF4SZ3/IMFY3:%DR0AAU4\$\$2H9DG*9\$Z4.2H4HECAD:0A262PWC0.BL RVU3C2093D0/D5\$CODCN3D6%E++9F\$DDPDNB8G69DZAE1ASTASED/ED1\$C++9F\$D98FG69DZA8+9+S9UY9Y34RB88C9+MA0H82T9B1A.PDIECF CX-C*EDAWE5JD 96\$96L/5NA77*6:88ATV24UX.J1RR47RSERWZ1WCV*SB\$H1OWM++46BC5SFZZ9M175 R4 8BD6WAT\$PG44VATRO.TJACCMAIOEXY0TTMD4EU+DD0"
+        val actual = PixelPass().decodeCWT(signCborData,
+            "MCowBQYDK2VwAyEAAF8LPSpgm1XFXR8pZtuT3c80Jxjmub3Q-17gV3sCftU",
+            emptyMap()
+        )
         Assert.assertEquals(expected, actual)
     }
 
