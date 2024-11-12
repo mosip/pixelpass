@@ -16,6 +16,7 @@ import io.mosip.pixelpass.cose.CWT
 import io.mosip.pixelpass.cose.CwtCryptoCtx
 import io.mosip.pixelpass.shared.DEFAULT_ZIP_FILE_NAME
 import io.mosip.pixelpass.cose.KeyUtil
+import io.mosip.pixelpass.cose.Util
 import io.mosip.pixelpass.shared.QR_BORDER
 import io.mosip.pixelpass.shared.QR_SCALE
 import io.mosip.pixelpass.shared.ZIP_HEADER
@@ -170,11 +171,21 @@ class PixelPass {
         return result
     }
 
-    fun decodeCWT(cwt: String, publicKeyString: String, mapper: Map<String, String>): String {
+    fun decodeCWT(
+        cwt: String,
+        publicKeyString: String,
+        mapper: Map<String, String>,
+        philSysPrefix: ArrayList<String>,
+        algorithm: String
+    ): String {
 
+        val isPhilSysData = Util().isPhilSysQRData(cwt, philSysPrefix)
         val splittedData: String = cwt.substring(cwt.indexOf(":") + 1)
         val base45DecodedData = Base45.getDecoder().decode(splittedData)
-        val oneKey: OneKey = KeyUtil.oneKeyFromPublicKey(publicKeyString)
+        val oneKey: OneKey = if(isPhilSysData)
+            KeyUtil.oneKeyFromPublicKeyForPhilSysData(publicKeyString)
+        else
+            KeyUtil.oneKeyFromPublicKey(publicKeyString, algorithm)
         return verifyAndDecode(base45DecodedData, oneKey, mapper)
     }
 
