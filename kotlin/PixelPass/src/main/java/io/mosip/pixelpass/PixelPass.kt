@@ -1,5 +1,7 @@
 package io.mosip.pixelpass
 
+
+import COSE.OneKey
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.util.Log
@@ -8,7 +10,13 @@ import co.nstant.`in`.cbor.CborEncoder
 import co.nstant.`in`.cbor.model.DataItem
 import io.mosip.pixelpass.cbor.Utils
 import io.mosip.pixelpass.common.Encoder
+import io.mosip.pixelpass.exception.InvalidSignatureException
+import io.mosip.pixelpass.exception.UnknownBinaryFileTypeException
+import io.mosip.pixelpass.cose.CWT
+import io.mosip.pixelpass.cose.CwtCryptoCtx
 import io.mosip.pixelpass.shared.DEFAULT_ZIP_FILE_NAME
+import io.mosip.pixelpass.cose.KeyUtil
+import io.mosip.pixelpass.cose.Util
 import io.mosip.pixelpass.shared.QR_BORDER
 import io.mosip.pixelpass.shared.QR_SCALE
 import io.mosip.pixelpass.shared.ZIP_HEADER
@@ -28,7 +36,7 @@ import java.util.Objects
 class PixelPass {
     fun toJson(base64UrlEncodedCborEncodedString: String): Any {
         val decodedData: ByteArray =
-            Encoder().decodeFromBase64UrlFormatEncoded(base64UrlEncodedCborEncodedString)
+            Encoder.decodeFromBase64UrlFormatEncoded(base64UrlEncodedCborEncodedString)
         val cbor: DataItem? =
             CborDecoder(ByteArrayInputStream(decodedData)).decode()[0]
         return Utils().toJson(cbor!!)
@@ -144,6 +152,7 @@ class PixelPass {
         }
         return payload.toString()
     }
+
     private fun toBitmap(qrCode: QrCode): Bitmap {
         Objects.requireNonNull(qrCode)
         require(!(QR_SCALE <= 0 || QR_BORDER < 0)) { "Value out of range" }
@@ -161,4 +170,34 @@ class PixelPass {
         }
         return result
     }
+
+    fun decodeCWT(
+        cwt: String,
+        publicKeyString: String,
+        mapper: Map<String, String>,
+        philSysPrefix: ArrayList<String>,
+        algorithm: String
+    ): String {
+
+        val isPhilSysData = Util().isPhilSysQRData(cwt, philSysPrefix)
+        val splittedData: String = cwt.substring(cwt.indexOf(":") + 1)
+        val base45DecodedData = Base45.getDecoder().decode(splittedData)
+        val oneKey = KeyUtil.oneKeyFromPublicKey(publicKeyString, algorithm, isPhilSysData)
+        return verifyAndDecode(base45DecodedData, oneKey, mapper)
+    }
+
+    private fun verifyAndDecode(rawCbor: ByteArray, oneKey: OneKey, mapper: Map<String, String>): String {
+        try {
+            val ctx: CwtCryptoCtx = CwtCryptoCtx.sign1Verify(oneKey.PublicKey())
+            val cwt = CWT.processCOSE(rawCbor, ctx)
+            val cborObject = cwt.getClaim(169.toShort())
+            val jsonObject = JSONObject(cborObject.ToJSONString())
+            return getMappedData(jsonObject, mapper, false)
+        } catch (e: java.lang.Exception) {
+            throw InvalidSignatureException("Signature is invalid : $e")
+        }
+    }
+
+
+
 }

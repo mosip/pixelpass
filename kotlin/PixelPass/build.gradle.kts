@@ -33,6 +33,12 @@ android {
 }
 
 dependencies {
+    implementation(files("libs/cose-java-1.1.0.jar"))
+    implementation(libs.bouncyCastle)
+    implementation(libs.upokecenterCbor)
+    implementation(libs.eddsa)
+    implementation(libs.commonCodec)
+    implementation(libs.jsonparser)
     implementation(libs.qrcodegen)
     implementation(libs.base45)
     implementation(libs.cbor)
@@ -48,7 +54,7 @@ tasks {
         gradleVersion = "8.5"
     }
 }
-
+tasks.register("prepareKotlinBuildScriptModel"){}
 tasks.register<Jar>("jarRelease") {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     dependsOn("dokkaJavadoc")

@@ -16,6 +16,14 @@ zxing = "3.5.3"
 json = "20140107"
 ztzip = "1.17"
 dokka = "1.9.20"
+cose = "1.1.0"
+json-parser = "1.1.1"
+eddsa = "0.3.0"
+bouncyCastle = "1.70"
+codec = "1.15"
+upokecenterCbor = "4.5.2"
+
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,7 +47,11 @@ cbor = { group = "co.nstant.in", name = "cbor", version.ref = "cbor" }
 zxing = { group = "com.google.zxing", name = "core", version.ref="zxing" }
 json = { group = "org.json", name = "json", version.ref = "json" }
 ztzip = { group = "org.zeroturnaround", name = "zt-zip", version.ref = "ztzip" }
-
+jsonparser = { group = "com.googlecode.json-simple", name = "json-simple", version.ref = "json-parser" }
+commonCodec = { group = "commons-codec", name = "commons-codec", version.ref = "codec" }
+eddsa = { group = "net.i2p.crypto", name = "eddsa", version.ref = "eddsa" }
+bouncyCastle = { group = "org.bouncycastle", name = "bcprov-jdk15on", version.ref = "bouncyCastle" }
+upokecenterCbor = { group = "com.upokecenter", name = "cbor", version.ref = "upokecenterCbor" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
