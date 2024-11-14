@@ -182,10 +182,7 @@ class PixelPass {
         val isPhilSysData = Util().isPhilSysQRData(cwt, philSysPrefix)
         val splittedData: String = cwt.substring(cwt.indexOf(":") + 1)
         val base45DecodedData = Base45.getDecoder().decode(splittedData)
-        val oneKey: OneKey = if(isPhilSysData)
-            KeyUtil.oneKeyFromPublicKeyForPhilSysData(publicKeyString)
-        else
-            KeyUtil.oneKeyFromPublicKey(publicKeyString, algorithm)
+        val oneKey = KeyUtil.oneKeyFromPublicKey(publicKeyString, algorithm, isPhilSysData)
         return verifyAndDecode(base45DecodedData, oneKey, mapper)
     }
 
