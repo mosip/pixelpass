@@ -2,9 +2,6 @@ package io.mosip.pixelpass
 
 
 import COSE.OneKey
-import android.graphics.Bitmap
-import android.graphics.Color
-import android.util.Log
 import co.nstant.`in`.cbor.CborDecoder
 import co.nstant.`in`.cbor.CborEncoder
 import co.nstant.`in`.cbor.model.DataItem
@@ -17,13 +14,10 @@ import io.mosip.pixelpass.cose.CwtCryptoCtx
 import io.mosip.pixelpass.shared.DEFAULT_ZIP_FILE_NAME
 import io.mosip.pixelpass.cose.KeyUtil
 import io.mosip.pixelpass.cose.Util
-import io.mosip.pixelpass.shared.QR_BORDER
-import io.mosip.pixelpass.shared.QR_SCALE
 import io.mosip.pixelpass.shared.ZIP_HEADER
 import io.mosip.pixelpass.shared.decodeHex
 import io.mosip.pixelpass.types.ECC
 import io.mosip.pixelpass.zlib.ZLib
-import io.nayuki.qrcodegen.QrCode
 import nl.minvws.encoding.Base45
 import org.json.JSONArray
 import org.json.JSONObject
@@ -42,10 +36,10 @@ class PixelPass {
         return Utils().toJson(cbor!!)
     }
 
-    fun generateQRCode(data: String, ecc: ECC = ECC.L, header: String = ""): Bitmap {
-        val dataWithHeader = generateQRData(data, header).toByteArray()
-        val qrcode = QrCode.encodeText(String(dataWithHeader), ecc.mEcc)
-        return toBitmap(qrcode)
+    fun generateQRCode(data: String, ecc: ECC = ECC.L, header: String = ""): String {
+        val dataWithHeader = generateQRData(data, header)
+        val qrcodeImage = convertQrDataIntoBase64(dataWithHeader)
+        return qrcodeImage
     }
 
     fun decode(data: String): String {
@@ -102,7 +96,7 @@ class PixelPass {
              compressedData = ZLib().encode(cborByteArrayOutputStream.toByteArray())
 
          }catch (e: Exception){
-             Log.e("PixelPass",e.toString())
+             logMessage(e.toString())
              compressedData = ZLib().encode(data.toByteArray())
          }finally {
              b45EncodedData = String(Base45.getEncoder().encode(compressedData))
@@ -119,8 +113,8 @@ class PixelPass {
         while (iterator.hasNext()){
             val next = iterator.next()
             val key = mapper[next] ?: next
-            val value = jsonData.get(next)
-            mappedJson.put(key,value)
+            val value = jsonData.get(next.toString())
+            mappedJson.put(key.toString(),value)
         }
 
         val payload = Utils().toDataItem(mappedJson)
@@ -147,29 +141,12 @@ class PixelPass {
         while (iterator.hasNext()){
             val next = iterator.next()
             val key = mapper[next] ?: next
-            val value = jsonData.get(next)
-            payload.put(key,value)
+            val value = jsonData.get(next.toString())
+            payload.put(key.toString(),value)
         }
         return payload.toString()
     }
 
-    private fun toBitmap(qrCode: QrCode): Bitmap {
-        Objects.requireNonNull(qrCode)
-        require(!(QR_SCALE <= 0 || QR_BORDER < 0)) { "Value out of range" }
-        require(!(QR_BORDER > Int.MAX_VALUE / 2 || qrCode.size + QR_BORDER * 2L > Int.MAX_VALUE / QR_SCALE)) { "Scale or border too large" }
-        val result = Bitmap.createBitmap(
-            (qrCode.size + QR_BORDER * 2) * QR_SCALE,
-            (qrCode.size + QR_BORDER * 2) * QR_SCALE,
-            Bitmap.Config.ARGB_8888
-        )
-        for (y in 0 until result.getHeight()) {
-            for (x in 0 until result.getWidth()) {
-                val color = qrCode.getModule(x / QR_SCALE - QR_BORDER, y / QR_SCALE - QR_BORDER)
-                result.setPixel(x, y, if (color) Color.BLACK else Color.WHITE)
-            }
-        }
-        return result
-    }
 
     fun decodeCWT(
         cwt: String,

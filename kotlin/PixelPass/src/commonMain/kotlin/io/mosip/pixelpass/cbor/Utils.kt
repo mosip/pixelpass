@@ -39,7 +39,7 @@ class Utils {
         val iterator = jsonObject.keys().iterator()
         while (iterator.hasNext()) {
             val key = iterator.next()
-            when (val value = jsonObject.get(key)) {
+            when (val value = jsonObject.get(key.toString())) {
                 is JSONObject -> accumulator.put(UnicodeString(key.toString()), mapToDataItem(Map(), value))
                 is JSONArray -> accumulator.put(UnicodeString(key.toString()), arrayToDataItem(Array(), value))
                 is String -> accumulator.put(UnicodeString(key.toString()), UnicodeString(value))

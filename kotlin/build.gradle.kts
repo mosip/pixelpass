@@ -5,5 +5,6 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid) apply false
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.dokka ) apply false
+    alias(libs.plugins.kotlinMultiplatform).apply(false)
     `maven-publish`
 }

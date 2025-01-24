@@ -1,16 +1,61 @@
 plugins {
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.jetbrainsKotlinAndroid)
+    kotlin("multiplatform")
     alias(libs.plugins.dokka)
     `maven-publish`
     alias(libs.plugins.sonarqube)
     signing
     jacoco
 }
-
 jacoco {
     toolVersion = "0.8.11"
     reportsDirectory = layout.buildDirectory.dir("reports/jacoco")
+}
+
+kotlin {
+    jvmToolchain(17)
+
+    androidTarget()
+
+    jvm {
+        testRuns["test"].executionTask.configure {
+            useJUnitPlatform()
+        }
+    }
+
+    applyDefaultHierarchyTemplate()
+
+
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(files("libs/cose-java-1.1.0.jar"))
+                implementation(libs.bouncyCastle)
+                implementation(libs.upokecenterCbor)
+                implementation(libs.eddsa)
+                implementation(libs.commonCodec)
+                implementation(libs.qrcodegen)
+                implementation(libs.base45)
+                implementation(libs.cbor)
+                implementation(libs.ztzip)
+                implementation(libs.google.zxing.javase)
+                implementation(libs.org.json)
+
+
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(libs.junit)
+                implementation(libs.mockk)
+                implementation(libs.json)
+            }
+        }
+        val jvmMain by getting
+        val androidMain by getting
+
+    }
 }
 
 android {
@@ -95,34 +140,15 @@ tasks {
 }
 tasks.register("prepareKotlinBuildScriptModel"){}
 tasks.register<Jar>("jarRelease") {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    dependsOn("dokkaJavadoc")
-    dependsOn("assembleRelease")
-    from("build/intermediates/javac/release/classes") {
-        include("**/*.class")
-    }
-    from("build/tmp/kotlin-classes/release") {
-        include("**/*.class")
-    }
+    dependsOn("jvmJar")
     manifest {
         attributes["Implementation-Title"] = project.name
-        attributes["Implementation-Version"] = "0.5.0-SNAPSHOT"
+        attributes["Implementation-Version"] = "0.1.0-SNAPSHOT"
     }
     archiveBaseName.set("${project.name}-release")
-    archiveVersion.set("0.5.0-SNAPSHOT")
+    archiveVersion.set("0.1.0-SNAPSHOT")
     destinationDirectory.set(layout.buildDirectory.dir("libs"))
 }
-
-tasks.register<Jar>("javadocJar") {
-    dependsOn("dokkaJavadoc")
-    archiveClassifier.set("javadoc")
-    from(tasks.named("dokkaHtml").get().outputs.files)
-}
-tasks.register<Jar>("sourcesJar") {
-    archiveClassifier.set("sources")
-    from(android.sourceSets["main"].java.srcDirs)
-}
-apply(from = "publish-artifact.gradle")
 tasks.register("generatePom") {
     dependsOn("generatePomFileForAarPublication", "generatePomFileForJarReleasePublication")
 }

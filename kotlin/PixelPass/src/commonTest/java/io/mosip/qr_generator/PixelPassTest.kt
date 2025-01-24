@@ -10,9 +10,12 @@ import io.mockk.mockkConstructor
 import io.mockk.mockkStatic
 import io.mockk.runs
 import io.mosip.pixelpass.PixelPass
+import io.mosip.pixelpass.convertQrDataIntoBase64
 import io.mosip.pixelpass.exception.UnknownBinaryFileTypeException
 import io.mosip.pixelpass.types.ECC
 import io.mosip.pixelpass.zlib.ZLib
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertNotNull
 import org.json.JSONObject
 import org.junit.After
 import org.junit.Assert
@@ -36,17 +39,10 @@ class PixelPassTest {
     }
 
     @Test
-    fun `should return bitmap QR for given data`() {
-        mockkConstructor(ZLib::class)
-        mockkStatic(Bitmap::class)
+    fun `should return Base 64 QR for given data`() {
 
         val mockedEncoded = byteArrayOf(1, 2, 3, 4)
-        val expected = mockk<Bitmap>()
-        every { anyConstructed<ZLib>().encode(any(), any()) } returns mockedEncoded
-        every { Bitmap.createBitmap(any(), any(), any()) } returns expected
-        every { expected.height } returns 10
-        every { expected.width } returns 10
-        every { expected.setPixel(any(), any(), any()) } just runs
+        val expected = mockk<String>()
 
 
         val data = "test"
@@ -54,6 +50,49 @@ class PixelPassTest {
         Assert.assertNotNull(actual)
         Assert.assertEquals(expected, actual)
     }
+
+    @Test
+    fun `test generateQRCode returns base64 string`() {
+        val inputData = "Test Data"
+        val expectedHeader = "Test Header"
+        val expectedBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAUA..."
+
+        every { PixelPass().generateQRData(inputData, expectedHeader) } returns "QR Data with Header"
+        every { convertQrDataIntoBase64("QR Data with Header") } returns expectedBase64
+
+        val result = PixelPass().generateQRCode(inputData, ECC.L, expectedHeader)
+
+        verify { PixelPass().generateQRData(inputData, expectedHeader) }
+        verify { convertQrDataIntoBase64("QR Data with Header") }
+
+        assertEquals(expectedBase64, result)
+    }
+
+    @Test
+    fun `test generateQRCode returns base64 string with Bitmap createBitmap mocked`() {
+        val inputData = "Test Data"
+        val expectedHeader = ECC.M
+        val expectedBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAUA..."
+        val mockBitmap = mockk<Bitmap>()
+        every { Bitmap.createBitmap(any<Int>(), any<Int>(), any()) } returns mockBitmap
+
+        val qrCodeGenerator = PixelPass()
+
+        every { qrCodeGenerator.generateQRData(inputData, expectedHeader.toString()) } returns "QR Data with Header"
+        every { convertQrDataIntoBase64("QR Data with Header") } returns expectedBase64
+
+        // Call the generateQRCode method
+        val result = qrCodeGenerator.generateQRCode(inputData, expectedHeader)
+
+        // Verify methods were called
+        verify { qrCodeGenerator.generateQRData(inputData, expectedHeader.toString()) }
+        verify { convertQrDataIntoBase64("QR Data with Header") }
+
+        // Assert base64 result
+        assertNotNull(result)
+        assertEquals(expectedBase64, result)
+    }
+
 
     @Test
     fun `should return decoded data for given QR data`() {
