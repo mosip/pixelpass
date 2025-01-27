@@ -28,7 +28,7 @@ import java.util.Objects
 class PixelPass {
     fun toJson(base64UrlEncodedCborEncodedString: String): Any {
         val decodedData: ByteArray =
-            Encoder().decodeFromBase64UrlFormatEncoded(base64UrlEncodedCborEncodedString)
+            Encoder.decodeFromBase64UrlFormatEncoded(base64UrlEncodedCborEncodedString)
         val cbor: DataItem? =
             CborDecoder(ByteArrayInputStream(decodedData)).decode()[0]
         return Utils().toJson(cbor!!)
