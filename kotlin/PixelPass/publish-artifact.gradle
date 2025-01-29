@@ -1,3 +1,6 @@
+group = "io.mosip"
+version = "0.6.0-SNAPSHOT"
+
 publishing {
     repositories {
         maven {
@@ -91,9 +94,7 @@ publishing {
                     gpgArgumentsNode.appendNode('arg', 'loopback')
                 }
             }
-            groupId = "io.mosip"
             artifactId = "pixelpass-aar"
-            version = "0.6.0-SNAPSHOT"
             if (project.gradle.startParameter.taskNames.any { it.contains('assembleRelease') }) {
                 artifacts {
                     aar {
@@ -105,9 +106,7 @@ publishing {
         }
         jarRelease(MavenPublication) {
             artifact(tasks.named("jvmJar").get())
-            groupId = "io.mosip"
             artifactId = "pixelpass-jar"
-            version = "0.6.0-SNAPSHOT"
             pom {
                 withXml {
                     asNode().appendNode('name', "Pixelpass")
