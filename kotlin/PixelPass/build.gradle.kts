@@ -55,6 +55,8 @@ kotlin {
         }
         val jvmMain by getting
         val androidMain by getting
+        val jvmTest by getting
+        val androidUnitTest by getting
 
     }
 }

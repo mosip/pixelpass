@@ -3,7 +3,14 @@ version = "0.6.0-SNAPSHOT"
 
 publishing {
     repositories {
-        mavenLocal()
+        maven {
+            url = System.getenv("OSSRH_URL")
+            name = "pixelpass"
+            credentials {
+                username = System.getenv("OSSRH_USER")
+                password = System.getenv("OSSRH_SECRET")
+            }
+        }
     }
     publications {
         aar(MavenPublication) {
@@ -182,4 +189,9 @@ publishing {
             }
         }
     }
+}
+signing {
+    useGpgCmd()
+    sign publishing.publications.aar
+    sign publishing.publications.jarRelease
 }
