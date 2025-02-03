@@ -6,7 +6,7 @@ import co.nstant.`in`.cbor.CborDecoder
 import co.nstant.`in`.cbor.CborEncoder
 import co.nstant.`in`.cbor.model.DataItem
 import io.mosip.pixelpass.cbor.Utils
-import io.mosip.pixelpass.common.Encoder
+import io.mosip.pixelpass.common.decodeFromBase64UrlFormatEncoded
 import io.mosip.pixelpass.exception.InvalidSignatureException
 import io.mosip.pixelpass.exception.UnknownBinaryFileTypeException
 import io.mosip.pixelpass.cose.CWT
@@ -25,12 +25,11 @@ import org.zeroturnaround.zip.ZipUtil
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.util.Objects
 
 class PixelPass {
     fun toJson(base64UrlEncodedCborEncodedString: String): Any {
         val decodedData: ByteArray =
-            Encoder.decodeFromBase64UrlFormatEncoded(base64UrlEncodedCborEncodedString)
+            decodeFromBase64UrlFormatEncoded(base64UrlEncodedCborEncodedString)
         val cbor: DataItem? =
             CborDecoder(ByteArrayInputStream(decodedData)).decode()[0]
         return Utils().toJson(cbor!!)
