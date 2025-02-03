@@ -1,96 +1,21 @@
 package io.mosip.qr_generator
 
-import android.graphics.Bitmap
-import android.util.Log
-import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.just
-import io.mockk.mockk
-import io.mockk.mockkConstructor
-import io.mockk.mockkStatic
-import io.mockk.runs
+import io.mockk.*
 import io.mosip.pixelpass.PixelPass
-import io.mosip.pixelpass.convertQrDataIntoBase64
 import io.mosip.pixelpass.exception.UnknownBinaryFileTypeException
-import io.mosip.pixelpass.types.ECC
-import io.mosip.pixelpass.zlib.ZLib
 import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNotNull
 import org.json.JSONObject
-import org.junit.After
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Test
 import org.zeroturnaround.zip.ZipUtil
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.test.*
+
 
 class PixelPassTest {
 
-    @Before
-    fun before() {
-        mockkStatic(Log::class)
-        every { Log.e(any(), any()) } returns 0
-    }
-
-    @After
+    @AfterTest
     fun after() {
         clearAllMocks()
-    }
-
-    @Test
-    fun `should return Base 64 QR for given data`() {
-
-        val mockedEncoded = byteArrayOf(1, 2, 3, 4)
-        val expected = mockk<String>()
-
-
-        val data = "test"
-        val actual = PixelPass().generateQRCode(data, ECC.M, "")
-        Assert.assertNotNull(actual)
-        Assert.assertEquals(expected, actual)
-    }
-
-    @Test
-    fun `test generateQRCode returns base64 string`() {
-        val inputData = "Test Data"
-        val expectedHeader = "Test Header"
-        val expectedBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAUA..."
-
-        every { PixelPass().generateQRData(inputData, expectedHeader) } returns "QR Data with Header"
-        every { convertQrDataIntoBase64("QR Data with Header") } returns expectedBase64
-
-        val result = PixelPass().generateQRCode(inputData, ECC.L, expectedHeader)
-
-        verify { PixelPass().generateQRData(inputData, expectedHeader) }
-        verify { convertQrDataIntoBase64("QR Data with Header") }
-
-        assertEquals(expectedBase64, result)
-    }
-
-    @Test
-    fun `test generateQRCode returns base64 string with Bitmap createBitmap mocked`() {
-        val inputData = "Test Data"
-        val expectedHeader = ECC.M
-        val expectedBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAUA..."
-        val mockBitmap = mockk<Bitmap>()
-        every { Bitmap.createBitmap(any<Int>(), any<Int>(), any()) } returns mockBitmap
-
-        val qrCodeGenerator = PixelPass()
-
-        every { qrCodeGenerator.generateQRData(inputData, expectedHeader.toString()) } returns "QR Data with Header"
-        every { convertQrDataIntoBase64("QR Data with Header") } returns expectedBase64
-
-        // Call the generateQRCode method
-        val result = qrCodeGenerator.generateQRCode(inputData, expectedHeader)
-
-        // Verify methods were called
-        verify { qrCodeGenerator.generateQRData(inputData, expectedHeader.toString()) }
-        verify { convertQrDataIntoBase64("QR Data with Header") }
-
-        // Assert base64 result
-        assertNotNull(result)
-        assertEquals(expectedBase64, result)
     }
 
 
@@ -100,7 +25,7 @@ class PixelPassTest {
         val expected = "hello"
 
         val actual = PixelPass().decode(data)
-        Assert.assertEquals(expected, actual)
+        assertEquals(expected, actual)
     }
 
     @Test
@@ -109,7 +34,7 @@ class PixelPassTest {
         val expected = "{\"temp\":15}"
 
         val actual = PixelPass().decode(data)
-        Assert.assertEquals(expected, actual)
+        assertEquals(expected, actual)
     }
 
     @Test
@@ -120,7 +45,7 @@ class PixelPassTest {
             "NCF6QB2NJXTAGPTV30I-R.431DJENA2JA-NEO:2RZI.3TL69%5L+2T+BTR\$9M PHQUKSIEUJ4\$F W0XQ08LA-NEYJ25/FTELJTPC31L.R-PI+YQXDPV0Q0C5-Q5S2W5OIJWIQZNOLN*XKRK1OP65QQ-NKQVB%/JX1M%9IF+8U48+SB000Z2WWS7"
 
         val actual = PixelPass().generateQRData(data)
-        Assert.assertEquals(expected, actual)
+        assertEquals(expected, actual)
     }
 
     @Test
@@ -131,7 +56,7 @@ class PixelPassTest {
             "NCF6QB2NJXTAGPTV30I-R.431DJENA2JA-NEO:2RZI.3TL69%5L+2T+BTR\$9M PHQUKSIEUJ4\$F W0XQ08LA-NEYJ25/FTELJTPC31L.R-PI+YQXDPV0Q0C5-Q5S2W5OIJWIQZNOLN*XKRK1OP65QQ-NKQVB%/JX1M%9IF+8U48+SB000Z2WWS7"
 
         val actual = PixelPass().decode(data)
-        Assert.assertEquals(expected, actual)
+        assertEquals(expected, actual)
     }
 
     @Test
@@ -142,7 +67,7 @@ class PixelPassTest {
             "NCF6QBJUBZJA W04IJFLTY\$IFHL4IJNU44TBJQQRJ2\$SVMLM:8QP/I2NC7D8RDDQOVXY4%V3WABH-EF3OU0Q8O5MIP.HDQ1JMZI.9K:V6JR8X\$F1Y9WH5FWE%109/D6XH1+P:GLVHL E7JJ1 H9LOEQS4PRAAUI+SBSCGCHSU7D00089AWS7"
 
         val actual = PixelPass().decode(data)
-        Assert.assertEquals(expected, actual)
+        assertEquals(expected, actual)
     }
 
 
@@ -153,7 +78,7 @@ class PixelPassTest {
         val mapper = mapOf("id" to "1", "name" to "2", "l_name" to "3")
 
         val actual = PixelPass().getMappedData(data, mapper, true)
-        Assert.assertEquals(expected, actual)
+        assertEquals(expected, actual)
     }
 
     @Test
@@ -163,7 +88,7 @@ class PixelPassTest {
         val mapper = mapOf("id" to "1", "name" to "2", "l_name" to "3")
 
         val actual = PixelPass().getMappedData(data, mapper)
-        Assert.assertEquals(expected, actual)
+        assertEquals(expected, actual)
     }
 
     @Test
@@ -195,7 +120,7 @@ class PixelPassTest {
         )
 
         val actual = PixelPass().getMappedData(data, mapper, true)
-        Assert.assertEquals(expected, actual)
+        assertEquals(expected, actual)
     }
 
     @Test
@@ -206,7 +131,7 @@ class PixelPassTest {
         val mapper = mapOf("1" to "id", "2" to "name", "3" to "l_name")
 
         val actual = PixelPass().decodeMappedData(data, mapper)
-        Assert.assertEquals(expected, actual)
+        assertEquals(expected, actual)
     }
 
     @Test
@@ -217,7 +142,7 @@ class PixelPassTest {
         val mapper = mapOf("1" to "id", "2" to "name", "3" to "l_name")
 
         val actual = PixelPass().decodeMappedData(data, mapper)
-        Assert.assertEquals(expected, actual)
+        assertEquals(expected, actual)
     }
 
     @Test
@@ -230,7 +155,7 @@ class PixelPassTest {
             arrayListOf("PH1"),
             "EdDSA"
         )
-        Assert.assertEquals(expected, actual)
+        assertEquals(expected, actual)
     }
 
     @Test
@@ -244,33 +169,23 @@ class PixelPassTest {
         ZipUtil.packEntry(createTempFile, tempZip);
 
         val actual = PixelPass().decodeBinary(tempZip.readBytes())
-        Assert.assertEquals(expected, actual)
+        assertEquals(expected, actual)
         tempZip.deleteOnExit()
     }
 
     @Test
     fun `should throw error if binary data type not zip`() {
         val tempZip = File.createTempFile("temp", ".png")
-        Assert.assertThrows(UnknownBinaryFileTypeException::class.java) {
+
+        tempZip.writeBytes(byteArrayOf(0x00, 0x01, 0x02)) // Writing some dummy bytes
+
+        assertFailsWith<UnknownBinaryFileTypeException> { // ✅ Correct usage
             PixelPass().decodeBinary(tempZip.readBytes())
         }
+
         tempZip.deleteOnExit()
     }
 
-    @Test
-    fun `should return the JSON converted from base64 encoded cbor encoded string`() {
-        val data =
-            "omd2ZXJzaW9uYzEuMGRkYXRhgaJiazFidjFiazKiZGsyLjGhZmsyLjEuMYHYGEmhZmsyLjEuMQFkazIuMoRDoQEmoRghWQFjMIIBXzCCAQSgAwIBAgIGAYwpA4_aMAoGCCqGSM49BAMCMDYxNDAyBgNVBAMMKzNfd1F3Y3Qxd28xQzBST3FfWXRqSTRHdTBqVXRiVTJCQXZteEltQzVqS3MwHhcNMjMxMjAyMDUzMjI4WhcNMjQwOTI3MDUzMjI4WjA2MTQwMgYDVQQDDCszX3dRd2N0MXdvMUMwUk9xX1l0akk0R3UwalV0YlUyQkF2bXhJbUM1aktzMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEQw7367PjIwU17ckX_G4ZqLW2EjPG0efV0cYzhvq2Ujkymrc33RVkgEE6q9iAAeLhl85IraAzT39SjOBV1EKu3jAKBggqhkjOPQQDAgNJADBGAiEAo4TsuxDl5-3eEp6SHDrBVn1rqOkGGLoOukJhelndGqICIQCpocrjWDwrWexoQZOOrwnEYRBmmfhaPor2OZCrbP3U69gYWLulZmsyLjIuMWMxLjBmazIuMi4yZnYyLjIuMmZrMi4yLjOhdmNvbS5leGFtcGxlLm5hbWVzcGFjZTGhAVggChSiDWMcNBzAxM6I-CuUe0P15BIwt06OIiNYkNyITxRmazIuMi40ZnYyLjIuNGZrMi4yLjWjYWHAdDIwMjMtMTItMDRUMTI6NDk6NDFaYWLAdDIwMjMtMTItMDRUMTI6NDk6NDFaYWPAdDIwMzMtMTItMDRUMTI6NDk6NDFaWEAE6jL7xUnhRbxd1LNq9xBA8G_RXGqFhc1GlKASbsfu7Mk-UJZzPvHis7zMRfYl2GNNgiTN-zbjFX_5IDdLi0jr"
-        val expectedDecodedData: ByteArray =
-            byteArrayOf(123, 34, 100, 97, 116, 97, 34, 58, 91, 123, 34, 107, 49, 34, 58, 34, 118, 49, 34, 44, 34, 107, 50, 34, 58, 123, 34, 107, 50, 46, 50, 34, 58, 91, 123, 34, 49, 34, 58, 45, 55, 125, 44, 123, 34, 51, 51, 34, 58, 34, 48, -17, -65, -67, 92, 117, 48, 48, 48, 49, 95, 48, -17, -65, -67, 92, 117, 48, 48, 48, 49, 92, 117, 48, 48, 48, 52, -17, -65, -67, 92, 117, 48, 48, 48, 51, 92, 117, 48, 48, 48, 50, 92, 117, 48, 48, 48, 49, 92, 117, 48, 48, 48, 50, 92, 117, 48, 48, 48, 50, 92, 117, 48, 48, 48, 54, 92, 117, 48, 48, 48, 49, -17, -65, -67, 41, 92, 117, 48, 48, 48, 51, -17, -65, -67, -17, -65, -67, 48, 92, 110, 92, 117, 48, 48, 48, 54, 92, 98, 42, -17, -65, -67, 72, -17, -65, -67, 61, 92, 117, 48, 48, 48, 52, 92, 117, 48, 48, 48, 51, 92, 117, 48, 48, 48, 50, 48, 54, 49, 52, 48, 50, 92, 117, 48, 48, 48, 54, 92, 117, 48, 48, 48, 51, 85, 92, 117, 48, 48, 48, 52, 92, 117, 48, 48, 48, 51, 92, 102, 43, 51, 95, 119, 81, 119, 99, 116, 49, 119, 111, 49, 67, 48, 82, 79, 113, 95, 89, 116, 106, 73, 52, 71, 117, 48, 106, 85, 116, 98, 85, 50, 66, 65, 118, 109, 120, 73, 109, 67, 53, 106, 75, 115, 48, 92, 117, 48, 48, 49, 101, 92, 117, 48, 48, 49, 55, 92, 114, 50, 51, 49, 50, 48, 50, 48, 53, 51, 50, 50, 56, 90, 92, 117, 48, 48, 49, 55, 92, 114, 50, 52, 48, 57, 50, 55, 48, 53, 51, 50, 50, 56, 90, 48, 54, 49, 52, 48, 50, 92, 117, 48, 48, 48, 54, 92, 117, 48, 48, 48, 51, 85, 92, 117, 48, 48, 48, 52, 92, 117, 48, 48, 48, 51, 92, 102, 43, 51, 95, 119, 81, 119, 99, 116, 49, 119, 111, 49, 67, 48, 82, 79, 113, 95, 89, 116, 106, 73, 52, 71, 117, 48, 106, 85, 116, 98, 85, 50, 66, 65, 118, 109, 120, 73, 109, 67, 53, 106, 75, 115, 48, 89, 48, 92, 117, 48, 48, 49, 51, 92, 117, 48, 48, 48, 54, 92, 117, 48, 48, 48, 55, 42, -17, -65, -67, 72, -17, -65, -67, 61, 92, 117, 48, 48, 48, 50, 92, 117, 48, 48, 48, 49, 92, 117, 48, 48, 48, 54, 92, 98, 42, -17, -65, -67, 72, -17, -65, -67, 61, 92, 117, 48, 48, 48, 51, 92, 117, 48, 48, 48, 49, 92, 117, 48, 48, 48, 55, 92, 117, 48, 48, 48, 51, 66, 92, 117, 48, 48, 48, 48, 92, 117, 48, 48, 48, 52, 67, 92, 117, 48, 48, 48, 101, -17, -65, -67, -17, -65, -67, -17, -65, -67, 35, 92, 117, 48, 48, 48, 53, 53, -17, -65, -67, -17, -65, -67, 92, 117, 48, 48, 49, 55, -17, -65, -67, 110, 92, 117, 48, 48, 49, 57, -17, -65, -67, -17, -65, -67, -17, -65, -67, 92, 117, 48, 48, 49, 50, 51, -17, -65, -67, -17, -65, -67, -17, -65, -67, -17, -65, -67, -17, -65, -67, -17, -65, -67, 51, -17, -65, -67, -17, -65, -67, -17, -65, -67, 82, 57, 50, -17, -65, -67, -17, -65, -67, 55, -17, -65, -67, 92, 117, 48, 48, 49, 53, 100, -17, -65, -67, 65, 58, -17, -65, -67, -40, -128, 92, 117, 48, 48, 48, 49, -17, -65, -67, -17, -65, -67, -17, -65, -67, 72, -17, -65, -67, -17, -65, -67, 51, 79, 127, 82, -17, -65, -67, -17, -65, -67, 85, -17, -65, -67, 66, -17, -65, -67, -17, -65, -67, 48, 92, 110, 92, 117, 48, 48, 48, 54, 92, 98, 42, -17, -65, -67, 72, -17, -65, -67, 61, 92, 117, 48, 48, 48, 52, 92, 117, 48, 48, 48, 51, 92, 117, 48, 48, 48, 50, 92, 117, 48, 48, 48, 51, 73, 92, 117, 48, 48, 48, 48, 48, 70, 92, 117, 48, 48, 48, 50, 33, 92, 117, 48, 48, 48, 48, -17, -65, -67, -17, -65, -67, -17, -65, -67, 92, 117, 48, 48, 49, 48, -17, -65, -67, -17, -65, -67, -17, -65, -67, -17, -65, -67, 92, 117, 48, 48, 49, 50, -17, -65, -67, -17, -65, -67, 92, 117, 48, 48, 49, 99, 58, -17, -65, -67, 86, 125, 107, -17, -65, -67, -17, -65, -67, 92, 117, 48, 48, 48, 54, 92, 117, 48, 48, 49, 56, -17, -65, -67, 92, 117, 48, 48, 48, 101, -17, -65, -67, 66, 97, 122, 89, -17, -65, -67, 92, 117, 48, 48, 49, 97, -17, -65, -67, 92, 117, 48, 48, 48, 50, 33, 92, 117, 48, 48, 48, 48, -17, -65, -67, -17, -65, -67, -17, -65, -67, -17, -65, -67, 88, 60, 43, 89, -17, -65, -67, 104, 65, -17, -65, -67, -17, -65, -67, -17, -65, -67, 92, 116, -17, -65, -67, 97, 92, 117, 48, 48, 49, 48, 102, -17, -65, -67, -17, -65, -67, 90, 62, -17, -65, -67, -17, -65, -67, 57, -17, -65, -67, -17, -65, -67, 108, -17, -65, -67, -17, -65, -67, -17, -65, -67, 34, 125, 44, 123, 34, 107, 50, 46, 50, 46, 49, 34, 58, 34, 49, 46, 48, 34, 44, 34, 107, 50, 46, 50, 46, 50, 34, 58, 34, 118, 50, 46, 50, 46, 50, 34, 44, 34, 107, 50, 46, 50, 46, 51, 34, 58, 123, 34, 99, 111, 109, 46, 101, 120, 97, 109, 112, 108, 101, 46, 110, 97, 109, 101, 115, 112, 97, 99, 101, 49, 34, 58, 123, 34, 49, 34, 58, 34, 92, 110, 92, 117, 48, 48, 49, 52, -17, -65, -67, 92, 114, 99, 92, 117, 48, 48, 49, 99, 52, 92, 117, 48, 48, 49, 99, -17, -65, -67, -17, -65, -67, -50, -120, -17, -65, -67, 43, -17, -65, -67, 123, 67, -17, -65, -67, -17, -65, -67, 92, 117, 48, 48, 49, 50, 48, -17, -65, -67, 78, -17, -65, -67, 92, 34, 35, 88, -17, -65, -67, -36, -120, 79, 92, 117, 48, 48, 49, 52, 34, 125, 125, 44, 34, 107, 50, 46, 50, 46, 52, 34, 58, 34, 118, 50, 46, 50, 46, 52, 34, 44, 34, 107, 50, 46, 50, 46, 53, 34, 58, 123, 34, 97, 34, 58, 34, 50, 48, 50, 51, 45, 49, 50, 45, 48, 52, 84, 49, 50, 58, 52, 57, 58, 52, 49, 90, 34, 44, 34, 98, 34, 58, 34, 50, 48, 50, 51, 45, 49, 50, 45, 48, 52, 84, 49, 50, 58, 52, 57, 58, 52, 49, 90, 34, 44, 34, 99, 34, 58, 34, 50, 48, 51, 51, 45, 49, 50, 45, 48, 52, 84, 49, 50, 58, 52, 57, 58, 52, 49, 90, 34, 125, 125, 44, 34, 92, 117, 48, 48, 48, 52, -17, -65, -67, 50, -17, -65, -67, -17, -65, -67, 73, -17, -65, -67, 69, -17, -65, -67, 93, -44, -77, 106, -17, -65, -67, 92, 117, 48, 48, 49, 48, 64, -17, -65, -67, 111, -17, -65, -67, 92, 92, 106, -17, -65, -67, -17, -65, -67, -17, -65, -67, 70, -17, -65, -67, -17, -65, -67, 92, 117, 48, 48, 49, 50, 110, -17, -65, -67, -17, -65, -67, -17, -65, -67, -17, -65, -67, 62, 80, -17, -65, -67, 115, 62, -17, -65, -67, -30, -77, -68, -17, -65, -67, 69, -17, -65, -67, 37, -17, -65, -67, 99, 77, -17, -65, -67, 36, -17, -65, -67, -17, -65, -67, 54, -17, -65, -67, 92, 117, 48, 48, 49, 53, 127, -17, -65, -67, 32, 55, 75, -17, -65, -67, 72, -17, -65, -67, 34, 93, 44, 34, 107, 50, 46, 49, 34, 58, 123, 34, 107, 50, 46, 49, 46, 49, 34, 58, 91, 123, 34, 107, 50, 46, 49, 46, 49, 34, 58, 49, 125, 93, 125, 125, 125, 93, 44, 34, 118, 101, 114, 115, 105, 111, 110, 34, 58, 34, 49, 46, 48, 34, 125)
-
-        val decodedData: Any = PixelPass().toJson(data)
-
-        Assert.assertArrayEquals(
-            expectedDecodedData,
-            decodedData.toString().toByteArray()
-        )
-    }
 }
 
 

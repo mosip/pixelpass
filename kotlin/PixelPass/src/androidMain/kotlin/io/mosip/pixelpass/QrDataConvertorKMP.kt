@@ -2,13 +2,13 @@ package io.mosip.pixelpass
 
 import android.graphics.Bitmap
 import android.util.Base64
-import android.util.Log
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.qrcode.QRCodeWriter
 import java.io.ByteArrayOutputStream
+import java.util.logging.Logger
 
-
+private val logger = Logger.getLogger("QrDataConvertor")
 actual fun convertQrDataIntoBase64(qrData: String): String {
     try {
         val qrCodeWriter = QRCodeWriter()
@@ -16,7 +16,7 @@ actual fun convertQrDataIntoBase64(qrData: String): String {
         val bitmap = toBitmap(bitMatrix)
         return encodeToString(bitmap).orEmpty()
     } catch (e: Exception){
-        Log.d("Error occurred while converting Qr Data to Base64 String::", e.toString())
+        logger.severe("Error occurred while converting Qr Data to Base64 String::+$e")
         e.printStackTrace()
         return ""
     }

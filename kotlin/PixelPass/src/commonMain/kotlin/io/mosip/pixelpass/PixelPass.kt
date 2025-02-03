@@ -95,7 +95,7 @@ class PixelPass {
              compressedData = ZLib().encode(cborByteArrayOutputStream.toByteArray())
 
          }catch (e: Exception){
-             logMessage(e.toString())
+
              compressedData = ZLib().encode(data.toByteArray())
          }finally {
              b45EncodedData = String(Base45.getEncoder().encode(compressedData))

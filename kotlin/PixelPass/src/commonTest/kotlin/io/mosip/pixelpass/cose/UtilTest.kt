@@ -1,7 +1,7 @@
 package io.mosip.pixelpass.cose
 
-import org.junit.Assert.assertFalse
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertFalse
 
 class UtilTest {
 
