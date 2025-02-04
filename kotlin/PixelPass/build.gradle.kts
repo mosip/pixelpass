@@ -3,9 +3,16 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.dokka)
     `maven-publish`
-    id("org.sonarqube") version "5.1.0.4882"
+    alias(libs.plugins.sonarqube)
     signing
+    jacoco
 }
+
+jacoco {
+    toolVersion = "0.8.11"
+    reportsDirectory = layout.buildDirectory.dir("reports/jacoco")
+}
+
 android {
     namespace = "io.mosip.pixelpass"
     compileSdk = 33
@@ -49,6 +56,38 @@ dependencies {
     testImplementation(libs.json)
 }
 
+
+tasks.withType<Test> {
+    jacoco {
+        isEnabled = true
+    }
+    finalizedBy(tasks.named("jacocoTestReport"))
+}
+
+tasks.register("jacocoTestReport", JacocoReport::class) {
+    description = "Generates Test coverage report"
+    group = "TestReport"
+    dependsOn("testDebugUnitTest")
+
+    reports {
+        xml.required = true
+        html.required = true
+    }
+
+    val kotlinTree = fileTree(
+        mapOf(
+            "dir" to "${layout.buildDirectory.get()}/tmp/kotlin-classes/debug",
+            "includes" to listOf("**/*.class")
+        )
+    )
+    val coverageSourceDirs = arrayOf("src/main/java")
+
+    classDirectories.setFrom(files(kotlinTree))
+    sourceDirectories.setFrom(coverageSourceDirs)
+
+    executionData.setFrom(files("${layout.buildDirectory.get()}/jacoco/testDebugUnitTest.exec"))
+}
+
 tasks {
     register<Wrapper>("wrapper") {
         gradleVersion = "8.5"
@@ -87,10 +126,13 @@ apply(from = "publish-artifact.gradle")
 tasks.register("generatePom") {
     dependsOn("generatePomFileForAarPublication", "generatePomFileForJarReleasePublication")
 }
-sonar {
+
+sonarqube {
     properties {
-        property("sonar.projectKey", "mosip_pixelpass")
-        property("sonar.organization", "mosip")
-        property("sonar.host.url", "https://sonarcloud.io")
+        property( "sonar.java.binaries", "build/intermediates/javac/debug")
+        property( "sonar.language", "kotlin")
+        property( "sonar.exclusions", "**/build/**, **/*.kt.generated, **/R.java, **/BuildConfig.java")
+        property( "sonar.scm.disabled", "true")
+        property( "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
     }
 }

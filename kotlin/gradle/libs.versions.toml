@@ -22,8 +22,7 @@ eddsa = "0.3.0"
 bouncyCastle = "1.70"
 codec = "1.15"
 upokecenterCbor = "4.5.2"
-
-
+sonarqube = "5.1.0.4872"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -59,3 +58,5 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
