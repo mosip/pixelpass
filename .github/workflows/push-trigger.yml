@@ -27,36 +27,16 @@ jobs:
       NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
-#  build:
-#    name: Build and analyze SonarCloud
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#        with:
-#          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-#      - name: Set up JDK 17
-#        uses: actions/setup-java@v4
-#        with:
-#          java-version: 17
-#          distribution: 'zulu' # Alternative distribution options are available
-#      - name: Cache SonarCloud packages
-#        uses: actions/cache@v4
-#        with:
-#          path: ~/.sonar/cache
-#          key: ${{ runner.os }}-sonar
-#          restore-keys: ${{ runner.os }}-sonar
-#      - name: Cache Gradle packages
-#        uses: actions/cache@v4
-#        with:
-#          path: ~/.gradle/caches
-#          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-#          restore-keys: ${{ runner.os }}-gradle
-#      - name: Build and analyze
-#        working-directory: ./kotlin  # Use working-directory inside a step
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#        run: ./gradlew PixelPass:build sonar --info
+  sonar_analysis:
+    needs: build-kotlin
+    if: "${{  github.event_name != 'pull_request' }}"
+    uses: mosip/kattu/.github/workflows/gradlew-sonar-analysis.yml@master-java21
+    with:
+      SERVICE_LOCATION: kotlin/PixelPass
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_ORGANIZATION: ${{ secrets.ORG_KEY }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_INJI_TEAM }}
 
   build-kotlin:
     uses: mosip/kattu/.github/workflows/gradle-build.yml@master
