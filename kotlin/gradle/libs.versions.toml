@@ -16,6 +16,7 @@ zxing = "3.5.3"
 json = "20140107"
 ztzip = "1.17"
 dokka = "1.9.20"
+sonarqube = "5.1.0.4872"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -47,3 +48,4 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
