@@ -23,9 +23,6 @@ kotlin {
         }
     }
 
-    applyDefaultHierarchyTemplate()
-
-
 
     sourceSets {
         val commonMain by getting {
@@ -143,12 +140,20 @@ tasks {
 }
 tasks.register("prepareKotlinBuildScriptModel"){}
 tasks.register<Jar>("jarRelease") {
+    dependsOn("dokkaJavadoc")
+    dependsOn("assembleRelease")
     dependsOn("jvmJar")
 }
 tasks.named<Jar>("jvmJar") {
     archiveBaseName.set("${project.name}-release")
     archiveVersion.set("0.6.0-SNAPSHOT")
     destinationDirectory.set(layout.buildDirectory.dir("libs"))
+}
+
+tasks.register<Jar>("javadocJar") {
+    dependsOn("dokkaJavadoc")
+    archiveClassifier.set("javadoc")
+    from(tasks.named("dokkaHtml").get().outputs.files)
 }
 tasks.register("generatePom") {
     dependsOn("generatePomFileForAarPublication", "generatePomFileForJarReleasePublication")
