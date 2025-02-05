@@ -7,9 +7,10 @@ import com.google.zxing.qrcode.QRCodeWriter
 import java.awt.image.BufferedImage
 import java.io.ByteArrayOutputStream
 import java.util.*
+import java.util.logging.Logger
 import javax.imageio.ImageIO
 
-
+private val logger = Logger.getLogger("QrDataConvertor")
 actual fun convertQrDataIntoBase64(qrData: String): String {
     try {
         val qrCodeWriter = QRCodeWriter()
@@ -18,7 +19,7 @@ actual fun convertQrDataIntoBase64(qrData: String): String {
         return encodeToString(qrImage, "png").orEmpty()
     }
     catch (e: Exception){
-        println("Error occurred while converting Qr Data to Base64 String::$e")
+        logger.severe("Error occurred while converting Qr Data to Base64 String::$e")
         e.printStackTrace()
         return ""
     }
@@ -34,6 +35,7 @@ private fun encodeToString(image: BufferedImage?, type: String?): String? {
         imageString = encoder.encodeToString(imageBytes)
         bos.close()
     } catch (e: Exception) {
+        logger.severe("Error occurred while Encoding to Base64 String::$e")
         e.printStackTrace()
     }
     return imageString

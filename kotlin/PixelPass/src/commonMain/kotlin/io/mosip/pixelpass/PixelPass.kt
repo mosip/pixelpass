@@ -25,8 +25,10 @@ import org.zeroturnaround.zip.ZipUtil
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.util.logging.Logger
 
 class PixelPass {
+    private val logger = Logger.getLogger(PixelPass::class.java.name)
     fun toJson(base64UrlEncodedCborEncodedString: String): Any {
         val decodedData: ByteArray =
             decodeFromBase64UrlFormatEncoded(base64UrlEncodedCborEncodedString)
@@ -95,7 +97,7 @@ class PixelPass {
              compressedData = ZLib().encode(cborByteArrayOutputStream.toByteArray())
 
          }catch (e: Exception){
-
+             logger.severe("Error occurred while converting Qr Data to Base64 String::$e")
              compressedData = ZLib().encode(data.toByteArray())
          }finally {
              b45EncodedData = String(Base45.getEncoder().encode(compressedData))
