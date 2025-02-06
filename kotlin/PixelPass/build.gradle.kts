@@ -133,11 +133,6 @@ tasks.register<Jar>("jarRelease") {
     dependsOn("assembleRelease")
     dependsOn("jvmJar")
 }
-tasks.named<Jar>("jvmJar") {
-    archiveBaseName.set("${project.name}-release")
-    archiveVersion.set("0.7.0-SNAPSHOT")
-    destinationDirectory.set(layout.buildDirectory.dir("libs"))
-}
 
 tasks.register<Jar>("javadocJar") {
     dependsOn("dokkaJavadoc")
