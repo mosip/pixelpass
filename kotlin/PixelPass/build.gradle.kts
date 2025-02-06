@@ -135,7 +135,7 @@ tasks.register<Jar>("jarRelease") {
 }
 tasks.named<Jar>("jvmJar") {
     archiveBaseName.set("${project.name}-release")
-    archiveVersion.set("0.6.0-SNAPSHOT")
+    archiveVersion.set("0.7.0-SNAPSHOT")
     destinationDirectory.set(layout.buildDirectory.dir("libs"))
 }
 
