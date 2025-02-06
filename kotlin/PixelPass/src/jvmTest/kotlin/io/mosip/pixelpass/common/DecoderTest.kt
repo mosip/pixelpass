@@ -5,7 +5,7 @@ import org.junit.Assert.assertThrows
 import kotlin.test.Test
 
 
-class DecoderKMPTest {
+class DecoderTest {
 
 
     @Test

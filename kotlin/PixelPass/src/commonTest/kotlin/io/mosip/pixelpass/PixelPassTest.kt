@@ -1,7 +1,6 @@
-package io.mosip.qr_generator
+package io.mosip.pixelpass
 
 import io.mockk.*
-import io.mosip.pixelpass.PixelPass
 import io.mosip.pixelpass.exception.UnknownBinaryFileTypeException
 import junit.framework.TestCase.assertEquals
 import org.json.JSONObject

@@ -1,4 +1,4 @@
-package io.mosip.qr_generator.zlib
+package io.mosip.pixelpass.qr_generator.zlib
 
 import io.mockk.clearAllMocks
 import io.mosip.pixelpass.zlib.ZLib
