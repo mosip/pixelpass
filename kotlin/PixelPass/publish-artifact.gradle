@@ -105,7 +105,7 @@ publishing {
             artifact("build/outputs/aar/${artifactId}-${version}-release.aar")
         }
         jarRelease(MavenPublication) {
-            artifact(tasks.named("jarRelease").get())
+            artifact(tasks.named("jvmJar").get())
             artifactId = "pixelpass-jar"
             artifact(tasks.named("javadocJar").get())
             artifact(tasks.named("sourcesJar").get())
