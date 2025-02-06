@@ -51,6 +51,8 @@ commonCodec = { group = "commons-codec", name = "commons-codec", version.ref = "
 eddsa = { group = "net.i2p.crypto", name = "eddsa", version.ref = "eddsa" }
 bouncyCastle = { group = "org.bouncycastle", name = "bcprov-jdk15on", version.ref = "bouncyCastle" }
 upokecenterCbor = { group = "com.upokecenter", name = "cbor", version.ref = "upokecenterCbor" }
+google-zxing-javase = { group = "com.google.zxing", name = "javase", version.ref = "zxing" }
+org-json = { group = "org.json", name = "json", version.ref = "json" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -58,5 +60,5 @@ androidLibrary = { id = "com.android.library", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
-
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }

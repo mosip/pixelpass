@@ -1,16 +1,61 @@
 plugins {
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.jetbrainsKotlinAndroid)
+    kotlin("multiplatform")
     alias(libs.plugins.dokka)
     `maven-publish`
     alias(libs.plugins.sonarqube)
     signing
     jacoco
 }
-
 jacoco {
     toolVersion = "0.8.11"
     reportsDirectory = layout.buildDirectory.dir("reports/jacoco")
+}
+
+kotlin {
+    jvmToolchain(17)
+
+    androidTarget()
+
+    jvm {
+        testRuns["test"].executionTask.configure {
+            useJUnitPlatform()
+        }
+    }
+
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(files("libs/cose-java-1.1.0.jar"))
+                implementation(libs.bouncyCastle)
+                implementation(libs.upokecenterCbor)
+                implementation(libs.eddsa)
+                implementation(libs.commonCodec)
+                implementation(libs.qrcodegen)
+                implementation(libs.base45)
+                implementation(libs.cbor)
+                implementation(libs.ztzip)
+                implementation(libs.google.zxing.javase)
+                implementation(libs.org.json)
+
+
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.junit)
+                implementation(libs.mockk)
+                implementation(libs.json)
+            }
+        }
+        val jvmMain by getting
+        val androidMain by getting
+        val jvmTest by getting
+        val androidUnitTest by getting
+
+    }
 }
 
 android {
@@ -34,59 +79,48 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+}
+
+
+
+tasks.register("jacocoTestReportJvm", JacocoReport::class) {
+    dependsOn("jvmTest")
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
     }
+
+    classDirectories.setFrom(fileTree(layout.buildDirectory.file("classes/kotlin/jvm/main")))
+    sourceDirectories.setFrom(files("src/commonMain/kotlin", "src/jvmMain/kotlin"))
+    executionData.setFrom(files("${layout.buildDirectory.get()}/jacoco/jvmTest.exec"))
 }
 
-dependencies {
-    implementation(files("libs/cose-java-1.1.0.jar"))
-    implementation(libs.bouncyCastle)
-    implementation(libs.upokecenterCbor)
-    implementation(libs.eddsa)
-    implementation(libs.commonCodec)
-    implementation(libs.jsonparser)
-    implementation(libs.qrcodegen)
-    implementation(libs.base45)
-    implementation(libs.cbor)
-    implementation(libs.ztzip)
+tasks.register("jacocoTestReportAndroid", JacocoReport::class) {
+    dependsOn("testDebugUnitTest")
 
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk)
-    testImplementation(libs.json)
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    classDirectories.setFrom(fileTree(layout.buildDirectory.file("tmp/kotlin-classes/debug")))
+    sourceDirectories.setFrom(files("src/commonMain/kotlin", "src/androidMain/kotlin"))
+    executionData.setFrom(files("${layout.buildDirectory.get()}/jacoco/testDebugUnitTest.exec"))
 }
-
 
 tasks.withType<Test> {
     jacoco {
         isEnabled = true
     }
-    finalizedBy(tasks.named("jacocoTestReport"))
-}
-
-tasks.register("jacocoTestReport", JacocoReport::class) {
-    description = "Generates Test coverage report"
-    group = "TestReport"
-    dependsOn("testDebugUnitTest")
-
-    reports {
-        xml.required = true
-        html.required = true
+    if (name.contains("jvm", ignoreCase = true)) {
+        finalizedBy(tasks.named("jacocoTestReportJvm"))
+    } else if (name.contains("android", ignoreCase = true)) {
+        finalizedBy(tasks.named("jacocoTestReportAndroid"))
     }
-
-    val kotlinTree = fileTree(
-        mapOf(
-            "dir" to "${layout.buildDirectory.get()}/tmp/kotlin-classes/debug",
-            "includes" to listOf("**/*.class")
-        )
-    )
-    val coverageSourceDirs = arrayOf("src/main/java")
-
-    classDirectories.setFrom(files(kotlinTree))
-    sourceDirectories.setFrom(coverageSourceDirs)
-
-    executionData.setFrom(files("${layout.buildDirectory.get()}/jacoco/testDebugUnitTest.exec"))
 }
+
+
 
 tasks {
     register<Wrapper>("wrapper") {
@@ -95,21 +129,13 @@ tasks {
 }
 tasks.register("prepareKotlinBuildScriptModel"){}
 tasks.register<Jar>("jarRelease") {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     dependsOn("dokkaJavadoc")
     dependsOn("assembleRelease")
-    from("build/intermediates/javac/release/classes") {
-        include("**/*.class")
-    }
-    from("build/tmp/kotlin-classes/release") {
-        include("**/*.class")
-    }
-    manifest {
-        attributes["Implementation-Title"] = project.name
-        attributes["Implementation-Version"] = "0.5.0-SNAPSHOT"
-    }
+    dependsOn("jvmJar")
+}
+tasks.named<Jar>("jvmJar") {
     archiveBaseName.set("${project.name}-release")
-    archiveVersion.set("0.5.0-SNAPSHOT")
+    archiveVersion.set("0.6.0-SNAPSHOT")
     destinationDirectory.set(layout.buildDirectory.dir("libs"))
 }
 
@@ -118,21 +144,23 @@ tasks.register<Jar>("javadocJar") {
     archiveClassifier.set("javadoc")
     from(tasks.named("dokkaHtml").get().outputs.files)
 }
-tasks.register<Jar>("sourcesJar") {
-    archiveClassifier.set("sources")
-    from(android.sourceSets["main"].java.srcDirs)
-}
-apply(from = "publish-artifact.gradle")
 tasks.register("generatePom") {
     dependsOn("generatePomFileForAarPublication", "generatePomFileForJarReleasePublication")
 }
 
+apply(from = "publish-artifact.gradle")
+
+var buildDir = project.layout.buildDirectory.get()
 sonarqube {
     properties {
-        property( "sonar.java.binaries", "build/intermediates/javac/debug")
-        property( "sonar.language", "kotlin")
-        property( "sonar.exclusions", "**/build/**, **/*.kt.generated, **/R.java, **/BuildConfig.java")
-        property( "sonar.scm.disabled", "true")
-        property( "sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
+        property("sonar.java.binaries", "$buildDir/classes/kotlin/jvm/main, $buildDir/tmp/kotlin-classes/debug")
+        property("sonar.language", "kotlin")
+        property("sonar.exclusions", "**/build/**, **/*.kt.generated, **/R.java, **/BuildConfig.java")
+        property("sonar.scm.disabled", "true")
+        property("sonar.coverage.jacoco.xmlReportPaths",
+            "$buildDir/reports/jacoco/jacocoTestReportJvm/jacocoTestReportJvm.xml," +
+            "$buildDir/reports/jacoco/jacocoTestReportAndroid/jacocoTestReportAndroid.xml"
+        )
     }
 }
+

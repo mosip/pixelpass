@@ -23,3 +23,4 @@ rootProject.name = "PixelPass"
 include(":app")
 include(":PixelPass")
 include(":example-qr-generator")
+include("examplejavaapp")
