@@ -80,6 +80,11 @@ android {
     }
 }
 
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    onlyIf {
+        publication.name in listOf("aar", "jarRelease")
+    }
+}
 
 
 tasks.register("jacocoTestReportJvm", JacocoReport::class) {
