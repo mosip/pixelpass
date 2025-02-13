@@ -1,20 +1,23 @@
 package io.mosip.pixelpass
 
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.util.Base64
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.common.BitMatrix
-import com.google.zxing.qrcode.QRCodeWriter
+import io.mosip.pixelpass.shared.QR_BORDER
+import io.mosip.pixelpass.shared.QR_SCALE
+import io.mosip.pixelpass.types.ECC
+import io.nayuki.qrcodegen.QrCode
 import java.io.ByteArrayOutputStream
+import java.util.*
 import java.util.logging.Logger
 
 private val logger = Logger.getLogger("QrDataConvertor")
-actual fun convertQrDataIntoBase64(qrData: String): String {
+actual fun convertQrDataIntoBase64(dataWithHeader: String, ecc: ECC): String {
     try {
-        val qrCodeWriter = QRCodeWriter()
-        val bitMatrix: BitMatrix = qrCodeWriter.encode(qrData, BarcodeFormat.QR_CODE, 650, 650)
-        val bitmap = toBitmap(bitMatrix)
-        return encodeToString(bitmap).orEmpty()
+        val qrcode = QrCode.encodeText(dataWithHeader, ecc.mEcc)
+        val bitMap =  toBitmap(qrcode)
+        return encodeToString(bitMap).orEmpty()
+
     } catch (e: Exception){
         logger.severe("Error occurred while converting Qr Data to Base64 String::+$e")
         e.printStackTrace()
@@ -22,17 +25,22 @@ actual fun convertQrDataIntoBase64(qrData: String): String {
     }
 }
 
-
-fun toBitmap(bitMatrix: BitMatrix): Bitmap {
-    val width = bitMatrix.width
-    val height = bitMatrix.height
-    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    for (x in 0 until width) {
-        for (y in 0 until height) {
-            bitmap.setPixel(x, y, if (bitMatrix.get(x, y)) android.graphics.Color.BLACK else android.graphics.Color.WHITE)
+private fun toBitmap(qrCode: QrCode): Bitmap {
+    Objects.requireNonNull(qrCode)
+    require(!(QR_SCALE <= 0 || QR_BORDER < 0)) { "Value out of range" }
+    require(!(QR_BORDER > Int.MAX_VALUE / 2 || qrCode.size + QR_BORDER * 2L > Int.MAX_VALUE / QR_SCALE)) { "Scale or border too large" }
+    val result = Bitmap.createBitmap(
+        (qrCode.size + QR_BORDER * 2) * QR_SCALE,
+        (qrCode.size + QR_BORDER * 2) * QR_SCALE,
+        Bitmap.Config.ARGB_8888
+    )
+    for (y in 0 until result.getHeight()) {
+        for (x in 0 until result.getWidth()) {
+            val color = qrCode.getModule(x / QR_SCALE - QR_BORDER, y / QR_SCALE - QR_BORDER)
+            result.setPixel(x, y, if (color) Color.BLACK else Color.WHITE)
         }
     }
-    return bitmap
+    return result
 }
 
 fun encodeToString(image: Bitmap): String? {

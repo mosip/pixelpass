@@ -39,7 +39,7 @@ class PixelPass {
 
     fun generateQRCode(data: String, ecc: ECC = ECC.L, header: String = ""): String {
         val dataWithHeader = generateQRData(data, header)
-        val qrcodeImage = convertQrDataIntoBase64(dataWithHeader)
+        val qrcodeImage = convertQrDataIntoBase64(dataWithHeader, ecc)
         return qrcodeImage
     }
 
