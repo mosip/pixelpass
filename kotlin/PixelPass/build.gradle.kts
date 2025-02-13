@@ -36,7 +36,6 @@ kotlin {
                 implementation(libs.base45)
                 implementation(libs.cbor)
                 implementation(libs.ztzip)
-                implementation(libs.google.zxing.javase)
                 implementation(libs.org.json)
 
 

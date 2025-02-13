@@ -12,7 +12,6 @@ qrcodegen = "1.8.0"
 base45 = "0.0.3"
 mockk = "1.13.10"
 cbor = "0.9"
-zxing = "3.5.3"
 json = "20140107"
 ztzip = "1.17"
 dokka = "1.9.20"
@@ -43,7 +42,6 @@ qrcodegen = { group = "io.nayuki", name = "qrcodegen", version.ref = "qrcodegen"
 base45 = { group = "io.github.ehn-digital-green-development", name = "base45", version.ref = "base45" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 cbor = { group = "co.nstant.in", name = "cbor", version.ref = "cbor" }
-zxing = { group = "com.google.zxing", name = "core", version.ref="zxing" }
 json = { group = "org.json", name = "json", version.ref = "json" }
 ztzip = { group = "org.zeroturnaround", name = "zt-zip", version.ref = "ztzip" }
 jsonparser = { group = "com.googlecode.json-simple", name = "json-simple", version.ref = "json-parser" }
@@ -51,7 +49,6 @@ commonCodec = { group = "commons-codec", name = "commons-codec", version.ref = "
 eddsa = { group = "net.i2p.crypto", name = "eddsa", version.ref = "eddsa" }
 bouncyCastle = { group = "org.bouncycastle", name = "bcprov-jdk15on", version.ref = "bouncyCastle" }
 upokecenterCbor = { group = "com.upokecenter", name = "cbor", version.ref = "upokecenterCbor" }
-google-zxing-javase = { group = "com.google.zxing", name = "javase", version.ref = "zxing" }
 org-json = { group = "org.json", name = "json", version.ref = "json" }
 
 [plugins]
