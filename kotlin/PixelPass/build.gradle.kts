@@ -36,7 +36,6 @@ kotlin {
                 implementation(libs.base45)
                 implementation(libs.cbor)
                 implementation(libs.ztzip)
-                implementation(libs.google.zxing.javase)
                 implementation(libs.org.json)
 
 
@@ -81,6 +80,11 @@ android {
     }
 }
 
+tasks.withType<AbstractPublishToMaven>().configureEach {
+    onlyIf {
+        publication.name in listOf("aar", "jarRelease")
+    }
+}
 
 
 tasks.register("jacocoTestReportJvm", JacocoReport::class) {

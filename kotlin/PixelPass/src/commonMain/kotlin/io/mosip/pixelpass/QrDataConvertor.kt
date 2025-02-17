@@ -1,3 +1,5 @@
 package io.mosip.pixelpass
 
-expect fun convertQrDataIntoBase64(qrData: String): String
+import io.mosip.pixelpass.types.ECC
+
+expect fun convertQrDataIntoBase64(dataWithHeader: String, ecc: ECC): String
