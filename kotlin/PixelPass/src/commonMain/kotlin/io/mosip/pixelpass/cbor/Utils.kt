@@ -17,6 +17,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONObject.NULL
 import java.io.ByteArrayInputStream
+import java.math.BigDecimal
 import java.util.Locale
 
 class Utils {
@@ -49,7 +50,7 @@ class Utils {
                     else
                         accumulator.put(UnicodeString(key.toString()), UnsignedInteger(value.toLong()))
                 }
-
+                is BigDecimal -> accumulator.put(UnicodeString(key.toString()), DoublePrecisionFloat(value.toDouble()))
                 is Long -> accumulator.put(UnicodeString(key.toString()), DoublePrecisionFloat(value.toDouble()))
                 is Double -> accumulator.put(UnicodeString(key.toString()), DoublePrecisionFloat(value))
                 true -> accumulator.put(UnicodeString(key.toString()), SimpleValue(SimpleValueType.TRUE))
@@ -73,7 +74,7 @@ class Utils {
                     else
                         accumulator.add(UnsignedInteger(value.toBigInteger()))
                 }
-
+                is BigDecimal -> accumulator.add(DoublePrecisionFloat(value.toDouble()))
                 is Long -> accumulator.add(DoublePrecisionFloat(value.toDouble()))
                 is Double -> accumulator.add(DoublePrecisionFloat(value))
                 true -> accumulator.add(SimpleValue(SimpleValueType.TRUE))
