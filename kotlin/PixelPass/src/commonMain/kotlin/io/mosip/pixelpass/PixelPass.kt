@@ -43,6 +43,20 @@ class PixelPass {
         return qrcodeImage
     }
 
+    fun generateQRCodeWithinLimit(
+        allowedQRDataSizeLimit: Int,
+        data: String,
+        ecc: ECC = ECC.L,
+        header: String = ""
+    ): String {
+        val dataWithHeader = generateQRData(data, header)
+        return if (allowedQRDataSizeLimit > dataWithHeader.length) {
+            convertQrDataIntoBase64(dataWithHeader, ecc)
+        } else {
+            ""
+        }
+    }
+
     fun decode(data: String): String {
         val decodedBase45Data = Base45.getDecoder().decode(data)
         val decompressedData = ZLib().decode(decodedBase45Data)
