@@ -14,6 +14,7 @@ import io.mosip.pixelpass.cose.CwtCryptoCtx
 import io.mosip.pixelpass.shared.DEFAULT_ZIP_FILE_NAME
 import io.mosip.pixelpass.cose.KeyUtil
 import io.mosip.pixelpass.cose.Util
+import io.mosip.pixelpass.exception.QrDataOverflowException
 import io.mosip.pixelpass.shared.ZIP_HEADER
 import io.mosip.pixelpass.shared.decodeHex
 import io.mosip.pixelpass.types.ECC
@@ -41,6 +42,19 @@ class PixelPass {
         val dataWithHeader = generateQRData(data, header)
         val qrcodeImage = convertQrDataIntoBase64(dataWithHeader, ecc)
         return qrcodeImage
+    }
+
+    fun generateQRCodeWithinLimit(
+        allowedQRDataSizeLimit: Int,
+        data: String,
+        ecc: ECC = ECC.L,
+        header: String = ""
+    ): String {
+        val dataWithHeader = generateQRData(data, header)
+        if (dataWithHeader.length > allowedQRDataSizeLimit) {
+            throw QrDataOverflowException()
+        }
+        return convertQrDataIntoBase64(dataWithHeader, ecc)
     }
 
     fun decode(data: String): String {
