@@ -38,6 +38,18 @@ Both Kotlin and Java packages are compiled from same Kotlin codebase. They are a
 
 returns a Bitmap image with header prepended if provided.
 
+`generateQRCodeWithinLimit(allowedQRDataSizeLimit, data, ecc, header )`
+
+`allowedQRDataSizeLimit` - Size Limit for Qr Data length. If it exceeds the limit, `QrDataOverflowException` will be thrown.
+
+`data` - Data needs to be compressed and encoded
+
+`ecc` - Error Correction Level for the QR generated. defaults to `"L"`
+
+`header` - Data header need to be prepend to identify the encoded data. defaults to `""`
+
+returns a Bitmap image with header prepended if provided.
+
 `generateQRData( data, header )`
 
 `data` - Data needs to be compressed and encoded
