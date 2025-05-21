@@ -2,7 +2,9 @@ package io.mosip.pixelpass
 
 import io.mockk.*
 import io.mosip.pixelpass.exception.UnknownBinaryFileTypeException
+import io.mosip.pixelpass.zlib.ZLib
 import junit.framework.TestCase.assertEquals
+import nl.minvws.encoding.Base45
 import org.json.JSONObject
 import org.zeroturnaround.zip.ZipUtil
 import java.io.File
@@ -183,6 +185,34 @@ class PixelPassTest {
         }
 
         tempZip.deleteOnExit()
+    }
+    @Test
+    fun `should encode raw data when JSON parsing fails`() {
+        val invalidJson = "this is not valid json"
+        val result = PixelPass().generateQRData(invalidJson)
+        assertTrue(result.isNotEmpty(), "Encoded result should not be empty")
+
+        val strippedHeader = result
+        val decoded = Base45.getDecoder().decode(strippedHeader)
+        val decompressed = ZLib().decode(decoded)
+        val original = String(decompressed)
+
+        assertEquals(invalidJson, original)
+    }
+
+    @Test
+    fun `should return encoded QR data for JSON array`() {
+        val jsonArray = """[{"name":"Alice","age":30},{"name":"Bob","age":25}]"""
+
+        val result = PixelPass().generateQRData(jsonArray)
+
+        assertTrue(result.isNotEmpty(), "Result should not be empty")
+
+        val encoded = result
+        val decodedBytes = Base45.getDecoder().decode(encoded)
+        val decompressedBytes = ZLib().decode(decodedBytes)
+
+        assertNotNull(decompressedBytes)
     }
 
 }
