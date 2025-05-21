@@ -62,7 +62,7 @@ class Utils {
         return accumulator
     }
 
-    private fun arrayToDataItem(accumulator: Array, jsonArray: JSONArray): Array {
+    fun arrayToDataItem(accumulator: Array, jsonArray: JSONArray): Array {
         for (i in 0 until jsonArray.length()) {
             when (val value = jsonArray.get(i)) {
                 is JSONObject -> accumulator.add(mapToDataItem(Map(), value))
