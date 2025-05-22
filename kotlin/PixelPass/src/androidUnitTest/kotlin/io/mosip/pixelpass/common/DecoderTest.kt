@@ -21,7 +21,7 @@ class DecoderTest {
         val expectedDecodedContent = "hello world"
         every { Base64.decode(encodedContent, Base64.DEFAULT) } returns expectedDecodedContent.toByteArray()
 
-        val decodedContent = decodeFromBase64UrlFormatEncoded(encodedContent)
+        val decodedContent = decodeFromBase64UrlFormat(encodedContent)
 
         assertEquals(expectedDecodedContent, decodedContent.toString(Charsets.UTF_8))
     }
@@ -33,7 +33,7 @@ class DecoderTest {
         every { Base64.decode(encodedContent, Base64.DEFAULT) } throws IllegalArgumentException("Illegal base64 character 25")
 
         val exception = assertFailsWith<IllegalArgumentException> {
-            decodeFromBase64UrlFormatEncoded(encodedContent)
+            decodeFromBase64UrlFormat(encodedContent)
         }
 
         assertEquals("Illegal base64 character 25", exception.message)

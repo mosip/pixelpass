@@ -1,4 +1,4 @@
 package io.mosip.pixelpass.common
 
 
-expect fun decodeFromBase64UrlFormatEncoded(content: String): ByteArray
+expect fun decodeFromBase64UrlFormat(content: String): ByteArray
