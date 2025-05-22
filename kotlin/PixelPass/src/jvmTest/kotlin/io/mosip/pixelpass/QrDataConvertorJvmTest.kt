@@ -4,7 +4,7 @@ import io.mockk.every
 import io.mockk.mockkStatic
 import io.mosip.pixelpass.types.ECC
 import io.nayuki.qrcodegen.QrCode
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class QrDataConvertorJvmTest {
