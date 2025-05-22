@@ -12,7 +12,7 @@ import java.util.*
 import java.util.logging.Logger
 
 private val logger = Logger.getLogger("QrDataConvertor")
-actual fun convertQrDataIntoBase64(dataWithHeader: String, ecc: ECC): String {
+actual fun convertQRDataIntoBase64(dataWithHeader: String, ecc: ECC): String {
     try {
         val qrcode = QrCode.encodeText(dataWithHeader, ecc.mEcc)
         val bitMap =  toBitmap(qrcode)
@@ -20,7 +20,6 @@ actual fun convertQrDataIntoBase64(dataWithHeader: String, ecc: ECC): String {
 
     } catch (e: Exception){
         logger.severe("Error occurred while converting Qr Data to Base64 String::+$e")
-        e.printStackTrace()
         return ""
     }
 }
