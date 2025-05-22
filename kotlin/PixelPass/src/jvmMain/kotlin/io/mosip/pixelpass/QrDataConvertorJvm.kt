@@ -17,7 +17,7 @@ actual fun convertQRDataIntoBase64(dataWithHeader: String, ecc: ECC): String {
 
     }
     catch (e: Exception){
-        logger.severe("Error occurred while converting Qr Data to Base64 String::$e")
+        logger.severe(e.toString())
         return ""
     }
 }
@@ -50,7 +50,7 @@ private fun encodeToString(image: BufferedImage?, type: String?): String? {
         imageString = encoder.encodeToString(imageBytes)
         bos.close()
     } catch (e: Exception) {
-        logger.severe("Error occurred while Encoding to Base64 String::$e")
+        logger.severe(e.toString())
     }
     return imageString
 }

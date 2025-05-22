@@ -97,7 +97,7 @@ class PixelPass {
              compressedData = ZLib().encode(cborByteArrayOutputStream.toByteArray())
 
          }catch (e: Exception){
-             logger.severe("Error occurred while converting Qr Data to Base64 String::$e")
+             logger.severe(e.toString())
              compressedData = ZLib().encode(data.toByteArray())
          }finally {
              b45EncodedData = String(Base45.getEncoder().encode(compressedData))
