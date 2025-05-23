@@ -13,7 +13,7 @@ class QrDataConvertorJvmTest {
     fun `test convertQrDataIntoBase64 with valid data`() {
         val data = "Test QR Data"
         val header = "Header"
-        val result = convertQRDataIntoBase64("$header$data", ECC.L)
+        val result = convertQrDataIntoBase64("$header$data", ECC.L)
 
         assert(result.isNotEmpty()) { "Result should not be empty for valid input" }
     }
@@ -25,7 +25,7 @@ class QrDataConvertorJvmTest {
 
         val data = "Test QR Data"
         val header = "Header"
-        val result = convertQRDataIntoBase64("$header$data", ECC.L)
+        val result = convertQrDataIntoBase64("$header$data", ECC.L)
 
         assertEquals("", result, "The result should be an empty string when an exception occurs")
     }
