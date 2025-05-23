@@ -36,7 +36,8 @@ Both Kotlin and Java packages are compiled from same Kotlin codebase. They are a
 
 `header` - Data header need to be prepend to identify the encoded data. defaults to `""`
 
-returns a Bitmap image with header prepended if provided.
+returns a Base64-encoded PNG string of the QR code image. If a header is provided, it's included in the data that gets encoded into the QR.
+
 
 `generateQRData( data, header )`
 

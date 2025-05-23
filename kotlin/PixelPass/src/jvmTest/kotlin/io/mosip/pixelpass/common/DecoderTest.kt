@@ -10,7 +10,7 @@ class DecoderTest {
 
     @Test
     fun `should decode the base64 url encoded content successfully in Java environment`() {
-        val decodedContent = decodeFromBase64UrlFormatEncoded("aGVsbG8gd29ybGQ=")
+        val decodedContent = decodeFromBase64UrlFormat("aGVsbG8gd29ybGQ=")
 
         assertEquals("hello world", decodedContent.toString(Charsets.UTF_8))
     }
@@ -18,7 +18,7 @@ class DecoderTest {
     @Test
     fun `should throw error when given base64 url encoded data contains non base64 character in Java environment`() {
         val exception = assertThrows(IllegalArgumentException::class.java) {
-            decodeFromBase64UrlFormatEncoded("aGVsbG8%d29ybGQ=")
+            decodeFromBase64UrlFormat("aGVsbG8%d29ybGQ=")
         }
 
         assertEquals(
@@ -30,7 +30,7 @@ class DecoderTest {
     @Test
     fun `should throw error when given base64 url encoded data has truncated bytes in Java environment`() {
         val exception = assertThrows(IllegalArgumentException::class.java) {
-            decodeFromBase64UrlFormatEncoded("aGVsbG8gd29ybG=")
+            decodeFromBase64UrlFormat("aGVsbG8gd29ybG=")
         }
 
         assertEquals(

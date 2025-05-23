@@ -5,7 +5,7 @@ import co.nstant.`in`.cbor.CborDecoder
 import co.nstant.`in`.cbor.CborEncoder
 import co.nstant.`in`.cbor.model.DataItem
 import io.mosip.pixelpass.cbor.Utils
-import io.mosip.pixelpass.common.decodeFromBase64UrlFormatEncoded
+import io.mosip.pixelpass.common.decodeFromBase64UrlFormat
 import io.mosip.pixelpass.exception.UnknownBinaryFileTypeException
 import io.mosip.pixelpass.shared.DEFAULT_ZIP_FILE_NAME
 import io.mosip.pixelpass.shared.ZIP_HEADER
@@ -25,7 +25,7 @@ class PixelPass {
     private val logger = Logger.getLogger(PixelPass::class.java.name)
     fun toJson(base64UrlEncodedCborEncodedString: String): Any {
         val decodedData: ByteArray =
-            decodeFromBase64UrlFormatEncoded(base64UrlEncodedCborEncodedString)
+            decodeFromBase64UrlFormat(base64UrlEncodedCborEncodedString)
         val cbor: DataItem? =
             CborDecoder(ByteArrayInputStream(decodedData)).decode()[0]
         return Utils().toJson(cbor!!)
@@ -33,7 +33,7 @@ class PixelPass {
 
     fun generateQRCode(data: String, ecc: ECC = ECC.L, header: String = ""): String {
         val dataWithHeader = generateQRData(data, header)
-        val qrcodeImage = convertQrDataIntoBase64(dataWithHeader, ecc)
+        val qrcodeImage = convertQRDataIntoBase64(dataWithHeader, ecc)
         return qrcodeImage
     }
 
@@ -91,7 +91,7 @@ class PixelPass {
              compressedData = ZLib().encode(cborByteArrayOutputStream.toByteArray())
 
          }catch (e: Exception){
-             logger.severe("Error occurred while converting Qr Data to Base64 String::$e")
+             logger.severe(e.toString())
              compressedData = ZLib().encode(data.toByteArray())
          }finally {
              b45EncodedData = String(Base45.getEncoder().encode(compressedData))
@@ -141,5 +141,4 @@ class PixelPass {
         }
         return payload.toString()
     }
-
 }
