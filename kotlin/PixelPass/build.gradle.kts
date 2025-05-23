@@ -27,7 +27,6 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(files("libs/cose-java-1.1.0.jar"))
                 implementation(libs.bouncyCastle)
                 implementation(libs.upokecenterCbor)
                 implementation(libs.eddsa)
@@ -37,8 +36,6 @@ kotlin {
                 implementation(libs.cbor)
                 implementation(libs.ztzip)
                 implementation(libs.org.json)
-
-
             }
         }
         val commonTest by getting {

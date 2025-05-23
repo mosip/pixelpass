@@ -1,19 +1,13 @@
 package io.mosip.pixelpass
 
 
-import COSE.OneKey
 import co.nstant.`in`.cbor.CborDecoder
 import co.nstant.`in`.cbor.CborEncoder
 import co.nstant.`in`.cbor.model.DataItem
 import io.mosip.pixelpass.cbor.Utils
 import io.mosip.pixelpass.common.decodeFromBase64UrlFormatEncoded
-import io.mosip.pixelpass.exception.InvalidSignatureException
 import io.mosip.pixelpass.exception.UnknownBinaryFileTypeException
-import io.mosip.pixelpass.cose.CWT
-import io.mosip.pixelpass.cose.CwtCryptoCtx
 import io.mosip.pixelpass.shared.DEFAULT_ZIP_FILE_NAME
-import io.mosip.pixelpass.cose.KeyUtil
-import io.mosip.pixelpass.cose.Util
 import io.mosip.pixelpass.shared.ZIP_HEADER
 import io.mosip.pixelpass.shared.decodeHex
 import io.mosip.pixelpass.types.ECC
@@ -147,35 +141,5 @@ class PixelPass {
         }
         return payload.toString()
     }
-
-
-    fun decodeCWT(
-        cwt: String,
-        publicKeyString: String,
-        mapper: Map<String, String>,
-        philSysPrefix: ArrayList<String>,
-        algorithm: String
-    ): String {
-
-        val isPhilSysData = Util().isPhilSysQRData(cwt, philSysPrefix)
-        val splittedData: String = cwt.substring(cwt.indexOf(":") + 1)
-        val base45DecodedData = Base45.getDecoder().decode(splittedData)
-        val oneKey = KeyUtil.oneKeyFromPublicKey(publicKeyString, algorithm, isPhilSysData)
-        return verifyAndDecode(base45DecodedData, oneKey, mapper)
-    }
-
-    private fun verifyAndDecode(rawCbor: ByteArray, oneKey: OneKey, mapper: Map<String, String>): String {
-        try {
-            val ctx: CwtCryptoCtx = CwtCryptoCtx.sign1Verify(oneKey.PublicKey())
-            val cwt = CWT.processCOSE(rawCbor, ctx)
-            val cborObject = cwt.getClaim(169.toShort())
-            val jsonObject = JSONObject(cborObject.ToJSONString())
-            return getMappedData(jsonObject, mapper, false)
-        } catch (e: java.lang.Exception) {
-            throw InvalidSignatureException("Signature is invalid : $e")
-        }
-    }
-
-
 
 }
