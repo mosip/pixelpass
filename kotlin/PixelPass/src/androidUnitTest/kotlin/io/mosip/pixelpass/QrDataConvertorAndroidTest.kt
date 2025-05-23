@@ -1,6 +1,6 @@
 package io.mosip.pixelpass.common
 
-import io.mosip.pixelpass.convertQrDataIntoBase64
+import io.mosip.pixelpass.convertQRDataIntoBase64
 import java.io.ByteArrayOutputStream
 
 import android.graphics.Bitmap
@@ -40,7 +40,7 @@ class QrDataConvertorAndroidTest {
 
         val data = "Test QR Data"
         val header = "Header"
-        val result = convertQrDataIntoBase64("$header$data", ECC.L)
+        val result = convertQRDataIntoBase64("$header$data", ECC.L)
 
         assertEquals(encodedString, result, "The Base64 encoded string should match the mocked value")
     }
@@ -52,7 +52,7 @@ class QrDataConvertorAndroidTest {
 
         val data = "Test QR Data"
         val header = "Header"
-        val result = convertQrDataIntoBase64("$header$data", ECC.L)
+        val result = convertQRDataIntoBase64("$header$data", ECC.L)
 
         assertEquals("", result, "The result should be an empty string when an exception occurs")
     }

@@ -9,7 +9,7 @@ import java.util.logging.Logger
 import javax.imageio.ImageIO
 
 private val logger = Logger.getLogger("QrDataConvertor")
-actual fun convertQrDataIntoBase64(dataWithHeader: String, ecc: ECC): String {
+actual fun convertQRDataIntoBase64(dataWithHeader: String, ecc: ECC): String {
     try {
         val qrcode = QrCode.encodeText(dataWithHeader, ecc.mEcc)
         val bufferedImage = toBufferedImage(qrcode, 650)
@@ -17,8 +17,7 @@ actual fun convertQrDataIntoBase64(dataWithHeader: String, ecc: ECC): String {
 
     }
     catch (e: Exception){
-        logger.severe("Error occurred while converting Qr Data to Base64 String::$e")
-        e.printStackTrace()
+        logger.severe(e.toString())
         return ""
     }
 }
@@ -51,8 +50,7 @@ private fun encodeToString(image: BufferedImage?, type: String?): String? {
         imageString = encoder.encodeToString(imageBytes)
         bos.close()
     } catch (e: Exception) {
-        logger.severe("Error occurred while Encoding to Base64 String::$e")
-        e.printStackTrace()
+        logger.severe(e.toString())
     }
     return imageString
 }
