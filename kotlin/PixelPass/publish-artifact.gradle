@@ -6,7 +6,7 @@ publishing {
         maven {
 
 //            url = System.getenv("OSSRH_URL")
-            url = "https://central.sonatype.com/repository/maven-snapshots"
+            url = "https://central.sonatype.com/api/v1/publish"
             name = "pixelpass"
             credentials {
                 username = System.getenv("OSSRH_USER")
