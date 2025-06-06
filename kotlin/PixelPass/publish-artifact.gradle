@@ -58,6 +58,12 @@ publishing {
                     pluginNode.appendNode('artifactId', 'git-commit-id-plugin')
                     pluginNode.appendNode('version', '3.0.1')
 
+                    // Add central-publishing-maven-plugin
+                    def centralPlugin = pluginsNode.appendNode('plugin')
+                    centralPlugin.appendNode('groupId', 'org.sonatype.central')
+                    centralPlugin.appendNode('artifactId', 'central-publishing-maven-plugin')
+                    centralPlugin.appendNode('version', '0.7.0')
+
                     def executionsNode = pluginNode.appendNode('executions')
                     def executionNode = executionsNode.appendNode('execution')
                     executionNode.appendNode('id', 'get-the-git-infos')
@@ -145,6 +151,12 @@ publishing {
                     pluginNode.appendNode('groupId', 'pl.project13.maven')
                     pluginNode.appendNode('artifactId', 'git-commit-id-plugin')
                     pluginNode.appendNode('version', '3.0.1')
+
+                    // Add central-publishing-maven-plugin
+                    def centralPlugin = pluginsNode.appendNode('plugin')
+                    centralPlugin.appendNode('groupId', 'org.sonatype.central')
+                    centralPlugin.appendNode('artifactId', 'central-publishing-maven-plugin')
+                    centralPlugin.appendNode('version', '0.7.0')
 
                     asNode().appendNode('scm').with {
                         appendNode('connection', 'scm:git:git://github.com/mosip/pixelpass.git')
