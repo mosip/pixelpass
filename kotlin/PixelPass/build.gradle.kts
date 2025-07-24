@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.bundling.Jar
 plugins {
     alias(libs.plugins.androidLibrary)
     kotlin("multiplatform")
@@ -82,7 +83,6 @@ tasks.withType<AbstractPublishToMaven>().configureEach {
         publication.name in listOf("aar", "jarRelease")
     }
 }
-
 
 tasks.register("jacocoMergedReport", JacocoReport::class) {
     dependsOn("jvmTest", "testDebugUnitTest")
@@ -205,6 +205,20 @@ sonarqube {
             "$buildDir/reports/jacoco/jacocoMergedReport/jacocoMergedReport.xml")
         property("sonar.sources", "src/commonMain/kotlin,src/jvmMain/kotlin,src/androidMain/kotlin")
         property("sonar.tests", "src/commonTest/kotlin,src/jvmTest/kotlin,src/androidUnitTest/kotlin")
+    }
+}
+tasks.withType<Jar>().configureEach {
+    doLast {
+        ant.withGroovyBuilder {
+            "checksum"(
+                "algorithm" to "md5",
+                "file" to archiveFile.get().asFile
+            )
+            "checksum"(
+                "algorithm" to "sha1",
+                "file" to archiveFile.get().asFile
+            )
+        }
     }
 }
 
