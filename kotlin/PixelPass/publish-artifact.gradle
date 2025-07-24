@@ -1,19 +1,20 @@
 group = "io.mosip"
-version = "0.7.0-RC"
+version = "0.7.0-SNAPSHOT"
 
 publishing {
     repositories {
         maven {
-            url = System.getenv("OSSRH_URL")
-            name = "pixelpass"
-            credentials {
-                username = System.getenv("OSSRH_USER")
-                password = System.getenv("OSSRH_SECRET")
-            }
+            name = "LocalMavenWithChecksums"
+            url = uri(layout.buildDirectory.dir("staging"))
         }
     }
     publications {
         aar(MavenPublication) {
+            groupId = "io.mosip"
+            artifactId = "pixelpass-aar"
+            version = version
+            artifact(tasks.named("javadocJar").get())
+            artifact(tasks.named("sourcesJar").get())
             pom {
                 withXml {
                     asNode().appendNode('name', "Pixelpass")
@@ -94,7 +95,6 @@ publishing {
                     gpgArgumentsNode.appendNode('arg', 'loopback')
                 }
             }
-            artifactId = "pixelpass-aar"
             if (project.gradle.startParameter.taskNames.any { it.contains('assembleRelease') }) {
                 artifacts {
                     aar {
