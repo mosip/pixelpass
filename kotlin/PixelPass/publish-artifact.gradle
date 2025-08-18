@@ -1,11 +1,22 @@
 group = "io.mosip"
-version = "0.7.0-SNAPSHOT"
+version = "0.8.0-SNAPSHOT"
 
 publishing {
     repositories {
-        maven {
-            name = "LocalMavenWithChecksums"
-            url = uri(layout.buildDirectory.dir("staging"))
+        if (System.getenv("RELEASE_TYPE") == "release") {
+            maven {
+                name = "LocalMavenWithChecksums"
+                url = uri(layout.buildDirectory.dir("staging"))
+            }
+        } else {
+            maven {
+                url = System.getenv("OSSRH_URL")
+                name = "pixelpass"
+                credentials {
+                    username = System.getenv("OSSRH_USER")
+                    password = System.getenv("OSSRH_SECRET")
+                }
+            }
         }
     }
     publications {
