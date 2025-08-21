@@ -14,7 +14,7 @@ const {
 const app = express()
 const port = 3000
 
-app.use(express.json())
+app.use(express.text())
 app.get('/', (req, res) => {
     const options = {
         root: path.join(__dirname)
