@@ -9,7 +9,7 @@
 <h1>PixelPass Example QR Generator App</h1>
 <div class="container">
     <div style="flex: 1; padding: 20px;height: 650px">
-        <textarea id="json-text" oninput="generateQR()" placeholder="Paste Your JSON Here"></textarea>
+        <textarea id="input-text" oninput="generateQR()" placeholder="Paste Your Data Here"></textarea>
     </div>
     <div style="flex: 1; padding: 20px;height: 652px">
         <div style="border: 1px solid black; height: 654px">
@@ -28,9 +28,8 @@
 
 <script>
     function generateQR() {
-        let jsonText = document.getElementById("json-text").value
+        let value = document.getElementById("input-text").value
         try {
-            let jsonString = JSON.stringify(JSON.parse(jsonText))
             document.getElementById("error").style.visibility = "hidden";
             let xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {
@@ -47,8 +46,7 @@
                 document.getElementById("download-section").style.visibility = "visible"
             };
             xhttp.open("POST", 'qr', true);
-            xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhttp.send(jsonString);
+            xhttp.send(value);
         } catch (e) {
             document.getElementById("error").style.visibility = "visible";
             document.getElementById("qr-image").style.visibility = "hidden";
